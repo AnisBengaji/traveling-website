@@ -1,0 +1,149 @@
+{% extends 'admin/admin_dashboard.html.twig' %}
+
+{% block title %}Category Index - Admin{% endblock %}
+
+{% block content %}
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="brand">
+      <a href="{{ path('landing_index') }}" class="text-white text-decoration-none">Carint Admin</a>
+    </div>
+    <ul class="nav flex-column">
+      <li class="nav-item">
+        <a class="nav-link" href="{{ path('admin_dashboard') }}">
+          <i class="fa fa-tachometer me-2" aria-hidden="true"></i> Dashboard
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ path('app_publication_index') }}">
+          <i class="fa fa-file-text me-2" aria-hidden="true"></i> Publications
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link active" href="{{ path('app_category_index') }}">
+          <i class="fa fa-list me-2" aria-hidden="true"></i> Destinations
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ path('landing_service') }}">
+          <i class="fa fa-cogs me-2" aria-hidden="true"></i> Offres
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ path('landing_contact') }}">
+          <i class="fa fa-envelope me-2" aria-hidden="true"></i> Contact Requests
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">
+          <i class="fa fa-sign-out me-2" aria-hidden="true"></i> Logout
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="d-flex justify-content-between align-items-center">
+      <h4 class="mb-0">Category Management</h4>
+      <div>
+        <span class="me-3"><i class="fa fa-user me-1" aria-hidden="true"></i> Admin User</span>
+        <a href="#" class="btn btn-sm btn-outline-danger"><i class="fa fa-sign-out" aria-hidden="true"></i> Logout</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="container-fluid">
+      <div class="row mb-4">
+        <div class="col-12">
+          <div class="dashboard-card">
+            <h3>Category Index</h3>
+            
+            <div class="table-responsive mt-4">
+              <table class="table table-hover border-bottom">
+                <thead style="background-color: #3a6ea5; color: white;">
+                  <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th class="text-center">Actions</th>
+                  </tr>
+                </thead>
+                <tbody class="bg-white">
+                {% for category in categories %}
+                  <tr class="border-bottom">
+                    <td>{{ category.idCategory }}</td>
+                    <td>{{ category.nomCategory }}</td>
+                    <td>{{ category.description }}</td>
+                    <td class="text-center">
+                      <div class="btn-group" role="group">
+                        <a href="{{ path('app_category_show', {'idCategory': category.idCategory}) }}" class="btn btn-sm rounded-circle btn-icon text-white" style="background-color: #4285F4;" title="Show">
+                          <i class="fa fa-eye"></i>
+                        </a>
+                        <a href="{{ path('app_category_edit', {'idCategory': category.idCategory}) }}" class="btn btn-sm rounded-circle btn-icon text-white mx-1" style="background-color: #FBBC05;" title="Edit">
+                          <i class="fa fa-edit"></i>
+                        </a>
+                      </div>
+                    </td>
+                  </tr>
+                {% else %}
+                  <tr>
+                    <td colspan="4" class="text-center py-4">No categories found</td>
+                  </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+            </div>
+
+            <div class="mt-4 text-center">
+              <a href="{{ path('app_category_new') }}" class="btn text-white px-4" style="background-color: #34A853;">
+                <i class="fa fa-plus me-1"></i> Create New
+              </a>
+              <a href="{{ path('app_publication_index') }}" class="btn text-white px-4 ms-2" style="background-color: #3a6ea5;">
+                <i class="fa fa-list me-1"></i> View Publications
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .main-content {
+      margin-left: 250px;
+      padding: 80px 20px 20px;
+    }
+
+    .dashboard-card {
+      background: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      padding: 24px;
+    }
+
+    .table th, .table td {
+      vertical-align: middle;
+      font-size: 0.9rem;
+    }
+
+    .table thead th {
+      font-weight: 600;
+    }
+
+    .btn-icon {
+      width: 32px;
+      height: 32px;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .ms-2 {
+      margin-left: 0.5rem;
+    }
+  </style>
+{% endblock %}

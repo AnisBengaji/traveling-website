@@ -1,0 +1,41 @@
+{% form_theme form 'bootstrap_4_layout.html.twig' %}
+{{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+    {{ form_widget(form) }}
+    <div class="text-end mt-3">
+        <button type="submit" class="btn btn-sm icon-btn save-btn" title="{{ button_label|default('Save') }}">
+            <i class="fa fa-check"></i>
+        </button>
+    </div>
+
+{{ form_end(form) }}
+
+<style>
+.icon-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s;
+    border: none;
+    color: white;
+}
+
+.save-btn {
+    background-color: #34A853;
+}
+
+.save-btn:hover {
+    background-color: #2E8B57;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+</style>
+
+<script>
+// Ensure that HTML5 validation is completely disabled for this form
+document.querySelector("form").noValidate = true;
+</script>

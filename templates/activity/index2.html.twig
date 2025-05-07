@@ -1,0 +1,88 @@
+{% extends 'base2.html.twig' %}
+
+{% block content %}
+<div class="container mt-3 d-flex justify-content-between align-items-center">
+        <a href="{{ path('app_destination_front_index') }}"
+           class="btn btn-outline-secondary mb-4">
+            <i class="fas fa-arrow-left me-1"></i> Retour à la liste
+        </a>
+
+        {# NOUVEAU BOUTON MÉTÉO #}
+        <a href="{{ path('app_weather', { city: destination.pays }) }}"
+           class="btn btn-info mb-4">
+            <i class="fas fa-cloud-sun me-1"></i>
+            Voir la météo 
+        </a>
+    </div>
+<div class="container mt-2">
+    <div class="row mb-3">
+        <div class="col-md-3">
+            <select id="currencySelect" class="form-select">
+                <option value="TND">TND</option>
+                <option value="EUR">EUR</option>
+                <option value="USD">USD</option>
+                <option value="CAD">CAD</option>
+            </select>
+        </div>
+    </div>
+    <div class="row">
+        {% for activity in activities %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div id="carouselActivity{{ activity.idActivity }}" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-inner">
+                            {% set images = [activity.imageActivity, activity.imageActivity2, activity.imageActivity3] %}
+                            {% for img in images %}
+                                {% if img %}
+                                    <div class="carousel-item{% if loop.first %} active{% endif %}">
+                                        <img src="{{ asset('Uploads/' ~ img) }}" class="d-block w-100" alt="Activity Image {{ loop.index }}" style="height:200px; object-fit:cover;">
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselActivity{{ activity.idActivity }}" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon"></span>
+                            <span class="visually-hidden">Précédent</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carouselActivity{{ activity.idActivity }}" data-bs-slide="next">
+                            <span class="carousel-control-next-icon"></span>
+                            <span class="visually-hidden">Suivant</span>
+                        </button>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">{{ activity.nomActivity }}</h5>
+                        <p class="card-text flex-grow-1">{{ activity.description|length > 100 ? activity.description|slice(0,100) ~ '...' : activity.description }}</p>
+                        <p class="fw-bold">Prix : <span class="activity-price" data-base-price="{{ activity.activityPrice }}">{{ activity.activityPrice|number_format(2, ',', ' ') }} TND</span></p>
+                        <a href="{{ path('app_activity_show2', {idActivity: activity.idActivity}) }}" class="btn btn-primary mt-auto">
+                            <i class="fas fa-eye me-1"></i> Voir Détails
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="col-12 text-center">
+                <p class="text-muted">Aucune activité trouvée.</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+    var rates = {TND:1, EUR:0.29, USD:0.32, CAD:0.43};
+    var select = document.getElementById('currencySelect');
+    select.addEventListener('change', function(){
+        var cur = this.value;
+        document.querySelectorAll('.activity-price').forEach(function(el){
+            var base = parseFloat(el.dataset.basePrice);
+            var conv = (base * rates[cur]).toFixed(2);
+            el.textContent = conv + ' ' + cur;
+        });
+    });
+});
+</script>
+{% endblock %}

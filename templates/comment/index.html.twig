@@ -1,0 +1,375 @@
+{% extends 'admin/admin_dashboard.html.twig' %}
+
+{% block title %}Comment Index{% endblock %}
+
+{% block content %}
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="brand">
+            <a href="{{ path('landing_index') }}" class="text-white text-decoration-none">Carint Admin</a>
+        </div>
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('admin_dashboard') }}">
+                    <i class="fa fa-tachometer me-2" aria-hidden="true"></i> Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('admin_users') }}">
+                    <i class="fa fa-users me-2" aria-hidden="true"></i> Users
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('app_publication_index') }}">
+                    <i class="fa fa-newspaper-o me-2" aria-hidden="true"></i> Publications
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="{{ path('app_comment_index') }}">
+                    <i class="fa fa-comments me-2" aria-hidden="true"></i> Comments
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('app_destination_index') }}">
+                    <i class="fa fa-map-marker me-2" aria-hidden="true"></i> Destinations
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('evenement_admin') }}">
+                    <i class="fa fa-calendar me-2" aria-hidden="true"></i> Evenements
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('reservation_index') }}">
+                    <i class="fa fa-ticket me-2" aria-hidden="true"></i> Reservations
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('app_offre_index') }}">
+                    <i class="fa fa-ticket me-2" aria-hidden="true"></i> Offres
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <i class="fa fa-envelope me-2" aria-hidden="true"></i> Contact Requests
+                </a>
+            </li>
+            <li class="nav-item">
+                <form method="post" action="{{ path('app_logout') }}">
+                    <input type="hidden" name="_token" value="{{ csrf_token('logout') }}">
+                    <button type="submit" class="nav-link btn btn-link p-0 text-start text-white" style="width: 100%;">
+                        <i class="fa fa-sign-out me-2" aria-hidden="true"></i> Logout
+                    </button>
+                </form>
+            </li>
+        </ul>
+    </div>
+
+    Marilyn Monroe
+    <!-- Topbar -->
+    <div class="topbar">
+        <div class="d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">Comments Management</h4>
+            <div>
+                <span class="me-3"><i class="fa fa-user me-1" aria-hidden="true"></i> Admin User</span>
+                <form method="post" action="{{ path('app_logout') }}" style="display: inline;">
+                    <input type="hidden" name="_token" value="{{ csrf_token('logout') }}">
+                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                        <i class="fa fa-sign-out" aria-hidden="true"></i> Logout
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container-fluid">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="dashboard-card">
+                        <h3>Comment Index</h3>
+                        
+                        <div class="table-responsive mt-4">
+                            <table class="table table-hover border-bottom">
+                                <thead style="background-color: #3a6ea5; color: white;">
+                                    <tr>
+                                        <th>Id</th>
+                                        <th>Content</th>
+                                        <th>Author</th>
+                                        <th>Date</th>
+                                        <th>Publication</th>
+                                        <th class="text-center">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white">
+                                    {% for comment in pagination %}
+                                        <tr class="border-bottom">
+                                            <td>{{ comment.idComment }}</td>
+                                            <td>{{ comment.content|length > 50 ? comment.content|slice(0, 50) ~ '...' : comment.content }}</td>
+                                            <td>{{ comment.author.nom|default(comment.author.email) }}</td>
+                                            <td>{{ comment.dateComment ? comment.dateComment|date('Y-m-d H:i') : '' }}</td>
+                                            <td>{{ comment.publication ? comment.publication.title : 'No publication' }}</td>
+                                            <td>
+                                                <div class="btn-group" role="group">
+                                                    <a href="{{ path('app_comment_show', {'id': comment.idComment}) }}" class="btn btn-sm rounded-circle btn-icon text-white" style="background-color: #4285F4;" title="Show">
+                                                        <i class="fa fa-eye"></i>
+                                                    </a>
+                                                    <a href="{{ path('app_comment_edit', {'id': comment.idComment}) }}" class="btn btn-sm rounded-circle btn-icon text-white mx-1" style="background-color: #FBBC05;" title="Edit">
+                                                        <i class="fa fa-edit"></i>
+                                                    </a>
+                                                    <form method="post" action="{{ path('app_comment_delete', {'id': comment.idComment}) }}" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ comment.idComment) }}">
+                                                        <button class="btn btn-sm rounded-circle btn-icon text-white" style="background-color: #EA4335;" title="Delete">
+                                                            <i class="fa fa-trash"></i>
+                                                        </button>
+                                                    </form>
+                                                    <a href="{{ path('download_single_comment_pdf', {'id': comment.idComment}) }}" class="btn btn-sm rounded-circle btn-icon text-white mx-1" style="background-color: #4facfe;" title="Download PDF">
+                                                        <i class="fa fa-file"></i>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% else %}
+                                        <tr>
+                                            <td colspan="6" class="text-center py-4">No comments found</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Pagination Controls -->
+                        <div class="pagination-wrapper mt-4">
+                            {{ knp_pagination_render(pagination, '@KnpPaginator/Pagination/bootstrap_v5_pagination.html.twig', {}, {
+                                'align': 'center',
+                                'rounded': true,
+                                'size': 'small'
+                            }) }}
+                            <div class="pagination-info text-center text-muted mt-2">
+                                {% set firstItem = (pagination.current - 1) * pagination.getItemNumberPerPage + 1 %}
+                                {% set lastItem = firstItem + pagination.count - 1 %}
+                                Showing {{ firstItem }} to {{ lastItem }} of {{ pagination.getTotalItemCount }} comments
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="mt-4 text-center">
+                            <a href="{{ path('app_publication_index') }}" class="btn text-white px-4" style="background-color: #3a6ea5;">
+                                <i class="fa fa-newspaper-o me-1"></i> View Publications
+                            </a>
+                            <a href="{{ path('download_comments_pdf') }}" class="btn text-white px-4 ms-2" style="background-color: #4facfe;" aria-label="Download all comments as PDF">
+                                <i class="fa fa-download me-1"></i> Download All PDF
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* Base Dashboard Styles */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f6f9;
+            color: #333;
+        }
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            height: 100%;
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+        .sidebar .brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .sidebar .nav-link {
+            color: #bdc3c7;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        .sidebar .nav-link:hover, .sidebar .nav-link.active {
+            background: #34495e;
+            color: white;
+        }
+        .topbar {
+            background: #ffffff;
+            padding: 15px 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: fixed;
+            top: 0;
+            left: 250px;
+            right: 0;
+            z-index: 1000;
+        }
+        .main-content {
+            margin-left: 250px;
+            padding: 80px 20px 20px;
+        }
+        .dashboard-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+        }
+        .dashboard-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+        .btn-icon {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 32px; /* Ensure vertical centering */
+        }
+        .btn-group .btn {
+            margin: 0 2px;
+        }
+        .btn-group .btn i {
+            font-size: 16px; /* Consistent icon size */
+        }
+        [href*="download"], [href*="download"]:hover {
+            transition: background-color 0.3s;
+        }
+        [href*="download"]:hover {
+            background-color: #3b9dfe;
+        }
+        @media (max-width: 576px) {
+            [href*="download"] {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+            .btn-icon {
+                width: 28px;
+                height: 28px;
+                line-height: 28px;
+            }
+            .btn-group .btn i {
+                font-size: 14px;
+            }
+        }
+        /* Pagination Styles */
+        .pagination-wrapper {
+            margin-top: 1.5rem;
+            padding: 0.5rem 0;
+        }
+        .pagination {
+            gap: 0.25rem;
+            justify-content: center;
+        }
+        .page-item .page-link {
+            background-color: #f8f9fa;
+            color: #3a6ea5;
+            border: 1px solid #3a6ea5;
+            border-radius: 50%;
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin: 0 3px;
+        }
+        .page-item.active .page-link {
+            background-color: #34A853;
+            color: white;
+            border-color: #34A853;
+            font-weight: bold;
+            transform: scale(1.15);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+        .page-item:not(.disabled) .page-link:hover {
+            background-color: #3a6ea5;
+            color: white;
+            border-color: #3a6ea5;
+            transform: scale(1.1);
+        }
+        .page-item.disabled .page-link {
+            background-color: #d3d9e0;
+            color: #6c757d;
+            border-color: #d3d9e0;
+            cursor: not-allowed;
+        }
+        .page-item .page-link[rel="prev"], .page-item .page-link[rel="next"] {
+            background-color: #3a6ea5;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+        }
+        .page-item:not(.disabled) .page-link[rel="prev"]:hover, .page-item:not(.disabled) .page-link[rel="next"]:hover {
+            background-color: #2a5b8c;
+            transform: scale(1.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+        .page-item.disabled .page-link[rel="prev"], .page-item.disabled .page-link[rel="next"] {
+            background-color: #d3d9e0;
+            color: #6c757d;
+        }
+        .pagination-info {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .table-responsive {
+                overflow-x: auto;
+            }
+            .pagination {
+                flex-wrap: wrap;
+            }
+            .page-item .page-link {
+                width: 34px;
+                height: 34px;
+                font-size: 0.9rem;
+                margin: 0 2px;
+            }
+            .page-item .page-link[rel="prev"], .page-item .page-link[rel="next"] {
+                padding: 0.4rem 0.8rem;
+            }
+        }
+        /* Accessibility */
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Pagination link handling
+            document.querySelectorAll('.page-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    if (!this.parentElement.classList.contains('disabled')) {
+                        window.location.href = this.href;
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}

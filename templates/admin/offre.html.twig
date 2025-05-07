@@ -1,0 +1,579 @@
+{# templates/admin_dashboard.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Basic -->
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!-- Mobile Metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <!-- Site Metas -->
+    <meta name="keywords" content="Carint Admin Dashboard" />
+    <meta name="description" content="Admin Dashboard for Carint" />
+    <meta name="author" content="Carint Team" />
+    <link rel="shortcut icon" href="{{ asset('images/fevicon.png') }}" type="image/png">
+
+    <title>{% block title %}Carint - Admin Dashboard{% endblock %}</title>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/bootstrap.css') }}" />
+
+    <!-- Fonts style -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+    <!-- Owl slider stylesheet -->
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" />
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <!-- Custom styles -->
+    <link href="{{ asset('css/style.css') }}" rel="stylesheet" />
+    <link href="{{ asset('css/responsive.css') }}" rel="stylesheet" />
+
+    <!-- Inline Admin Dashboard Styles -->
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            height: 100vh;
+            background: #1e2a38;
+            color: white;
+            padding: 20px 0;
+            z-index: 1000;
+        }
+
+        .brand {
+            padding: 0 20px 20px;
+            font-size: 24px;
+            font-weight: 500;
+            color: white;
+        }
+
+        .nav-item {
+            padding: 5px 20px;
+        }
+
+        .nav-link {
+            color: #a4b1cd !important;
+            padding: 10px 15px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: white !important;
+        }
+
+        .nav-link i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            background: white;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .welcome-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .dashboard-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            height: 100%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .dashboard-card h3 {
+            color: #333;
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+
+        .dashboard-card p {
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .btn-view-all {
+            background: #0d6efd;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-view-all:hover {
+            background: #0b5ed7;
+            color: white;
+        }
+
+        .stats-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .stats-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            color: #666;
+        }
+
+        .stats-item i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .tracking-form {
+            display: flex;
+            gap: 10px;
+        }
+
+        .tracking-form input {
+            flex: 1;
+            padding: 8px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .btn-track {
+            background: #0d6efd;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .logout-btn {
+            background: #dc3545;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .logout-btn:hover {
+            background: #bb2d3b;
+            color: white;
+        }
+
+        /* Add spacing for the button under the form */
+        .form-actions {
+            margin-top: 20px;
+            text-align: left;
+        }
+    </style>
+</head>
+
+<body>
+    {% block content %}
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="brand">
+            Carint Admin
+        </div>
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link active" href="{{ path('admin_dashboard') }}">
+                    <i class="fa fa-dashboard"></i> Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <i class="fa fa-file-text"></i> Publications
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <i class="fa fa-map-marker"></i> destinations
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('app_offre') }}">
+                    <i class="fa fa-tags"></i> offres
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('landing_contact') }}">
+                    <i class="fa fa-envelope"></i> Contact Requests
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <i class="fa fa-sign-out"></i> Logout
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Bar -->
+        <div class="topbar">
+            <div class="container mt-5">
+                <h1 class="mb-4">Créer une nouvelle offre</h1>
+
+                {# Messages flash #}
+                {% for message in app.flashes('success') %}
+                    <div class="alert alert-success" role="alert">{{ message }}</div>
+                {% endfor %}
+                {% for message in app.flashes('error') %}
+                    <div class="alert alert-danger" role="alert">{{ message }}</div>
+                {% endfor %}
+
+                {# Formulaire avec gestion des erreurs #}
+                {{ form_start(form, {'attr': {'class': 'form'}}) }}
+                    <div class="mb-3">
+                        {{ form_row(form.titre, {
+                            'label': 'Titre',
+                            'label_attr': {'class': 'form-label'},
+                            'attr': {'class': 'form-control'}
+                        }) }}
+                        {{ form_errors(form.titre) }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_row(form.description, {
+                            'label': 'Description',
+                            'label_attr': {'class': 'form-label'},
+                            'attr': {'class': 'form-control'}
+                        }) }}
+                        {{ form_errors(form.description) }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_row(form.prix, {
+                            'label': 'Prix',
+                            'label_attr': {'class': 'form-label'},
+                            'attr': {'class': 'form-control'}
+                        }) }}
+                        {{ form_errors(form.prix) }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_row(form.destination, {
+                            'label': 'Destination',
+                            'label_attr': {'class': 'form-label'},
+                            'attr': {'class': 'form-control'}
+                        }) }}
+                        {{ form_errors(form.destination) }}
+                    </div>
+                {{ form_end(form) }}
+
+                {# Bouton Enregistrer déplacé sous le formulaire #}
+                <div class="form-actions">
+                    <button type="submit" form="{{ form.vars.id }}" class="btn btn-success">Enregistrer</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="container mt-4">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h1>Gestion des offres</h1>
+                        <div class="d-flex gap-2">
+                            <a href="{{ path('app_offre_new') }}" class="btn btn-primary">
+                                <i class="fa fa-plus"></i> Nouvelle offre
+                            </a>
+                            <a href="{{ path('app_tutorial_index') }}" class="btn btn-secondary">
+                                <i class="fa fa-book"></i> Tutoriels
+                            </a>
+                            <a href="{{ path('admin_offre_export_pdf') }}" class="btn btn-danger">
+                                <i class="fa fa-file-pdf"></i> Exporter PDF
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# Statistiques #}
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="card bg-primary text-white h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="card-title mb-0">Total offres</h6>
+                                    <h2 class="mb-0">{{ offre|length }}</h2>
+                                </div>
+                                <i class="fa fa-suitcase fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-success text-white h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="card-title mb-0">Prix moyen</h6>
+                                    <h2 class="mb-0">
+                                        {% set total = 0 %}
+                                        {% for o in offre %}{% set total = total + o.prix %}{% endfor %}
+                                        {{ offre|length > 0 ? (total / offre|length)|number_format(2, ',', ' ') : '0' }} €
+                                    </h2>
+                                </div>
+                                <i class="fa fa-euro fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-info text-white h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="card-title mb-0">Total tutoriels</h6>
+                                    <h2 class="mb-0">
+                                        {% set totalTuto = 0 %}
+                                        {% for o in offre %}{% set totalTuto = totalTuto + o.tutorials|length %}{% endfor %}
+                                        {{ totalTuto }}
+                                    </h2>
+                                </div>
+                                <i class="fa fa-book fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# Filtres et recherche #}
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fa fa-search"></i></span>
+                                <input type="text" id="searchInput" class="form-control" placeholder="Rechercher une offre...">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex gap-2">
+                                <select id="destinationFilter" class="form-select">
+                                    <option value="">Toutes les destinations</option>
+                                    {% set uniqueDestinations = [] %}
+                                    {% for o in offre %}
+                                        {% if o.destination not in uniqueDestinations %}
+                                            {% set uniqueDestinations = uniqueDestinations|merge([o.destination]) %}
+                                        {% endif %}
+                                    {% endfor %}
+                                    {% for destination in uniqueDestinations|sort %}
+                                        <option value="{{ destination }}">{{ destination }}</option>
+                                    {% endfor %}
+                                </select>
+                                <select id="sortSelect" class="form-select">
+                                    <option value="">Trier par</option>
+                                    <option value="prix-asc">Prix (Moins cher)</option>
+                                    <option value="prix-desc">Prix (Plus cher)</option>
+                                    <option value="titre-asc">Nom (A-Z)</option>
+                                    <option value="titre-desc">Nom (Z-A)</option>
+                                    <option value="destination-asc">Destination (A-Z)</option>
+                                    <option value="destination-desc">Destination (Z-A)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# Tableau des offres #}
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="offreTable">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Image</th>
+                                    <th>Titre</th>
+                                    <th>Description</th>
+                                    <th>Prix</th>
+                                    <th>Destination</th>
+                                    <th>Tutoriels</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for offre in offre %}
+                                    <tr>
+                                        <td>
+                                            {% if offre.image %}
+                                                <img src="{{ asset('uploads/images/' ~ offre.image) }}" 
+                                                     alt="Image de l'offre" 
+                                                     class="img-thumbnail" 
+                                                     style="max-width: 100px;">
+                                            {% else %}
+                                                <div class="text-center text-muted">
+                                                    <i class="fa fa-image fa-2x"></i>
+                                                    <p class="small mb-0">Aucune image</p>
+                                                </div>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ offre.titre }}</td>
+                                        <td>{{ offre.description|length > 100 ? offre.description|slice(0, 100) ~ '...' : offre.description }}</td>
+                                        <td>{{ offre.prix }} €</td>
+                                        <td>{{ offre.destination }}</td>
+                                        <td>
+                                            {% if offre.tutorials|length > 0 %}
+                                                <span class="badge bg-primary">{{ offre.tutorials|length }}</span>
+                                            {% else %}
+                                                <span class="badge bg-secondary">0</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <a href="{{ path('app_offre_show', {'id': offre.id}) }}" 
+                                                   class="btn btn-sm btn-info" 
+                                                   title="Voir">
+                                                    <i class="fa fa-eye"></i>
+                                                </a>
+                                                <a href="{{ path('app_offre_edit', {'id': offre.id}) }}" 
+                                                   class="btn btn-sm btn-warning" 
+                                                   title="Modifier">
+                                                    <i class="fa fa-edit"></i>
+                                                </a>
+                                                <a href="{{ path('app_tutorials_by_offre', {'id': offre.id}) }}" 
+                                                   class="btn btn-sm btn-secondary" 
+                                                   title="Tutoriels">
+                                                    <i class="fa fa-book"></i>
+                                                </a>
+                                                <form method="post" 
+                                                      action="{{ path('app_offre_delete', {'id': offre.id}) }}" 
+                                                      onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette offre ?');" 
+                                                      class="d-inline">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ offre.id) }}">
+                                                    <button class="btn btn-sm btn-danger" title="Supprimer">
+                                                        <i class="fa fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% else %}
+                                    <tr>
+                                        <td colspan="7" class="text-center">Aucune offre trouvée</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            const destinationFilter = document.getElementById('destinationFilter');
+            const sortSelect = document.getElementById('sortSelect');
+            const table = document.getElementById('offreTable');
+            const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+
+            function filterTable() {
+                const searchText = searchInput.value.toLowerCase();
+                const selectedDestination = destinationFilter.value;
+
+                Array.from(rows).forEach(row => {
+                    const cells = row.getElementsByTagName('td');
+                    const title = cells[1].textContent.toLowerCase();
+                    const description = cells[2].textContent.toLowerCase();
+                    const destination = cells[4].textContent;
+
+                    const matchesSearch = title.includes(searchText) || description.includes(searchText);
+                    const matchesDestination = selectedDestination === '' || destination === selectedDestination;
+
+                    row.style.display = matchesSearch && matchesDestination ? '' : 'none';
+                });
+            }
+
+            function sortTable() {
+                const sortValue = sortSelect.value;
+                if (!sortValue) return;
+
+                const [field, direction] = sortValue.split('-');
+                const tbody = table.getElementsByTagName('tbody')[0];
+                const rows = Array.from(tbody.getElementsByTagName('tr'));
+
+                rows.sort((a, b) => {
+                    let aValue = a.getElementsByTagName('td')[getColumnIndex(field)].textContent;
+                    let bValue = b.getElementsByTagName('td')[getColumnIndex(field)].textContent;
+
+                    if (field === 'prix') {
+                        aValue = parseFloat(aValue);
+                        bValue = parseFloat(bValue);
+                    }
+
+                    return direction === 'asc' ? 
+                        (aValue > bValue ? 1 : -1) : 
+                        (aValue < bValue ? 1 : -1);
+                });
+
+                rows.forEach(row => tbody.appendChild(row));
+            }
+
+            function getColumnIndex(field) {
+                const headers = table.getElementsByTagName('th');
+                for (let i = 0; i < headers.length; i++) {
+                    if (headers[i].textContent.toLowerCase().includes(field)) {
+                        return i;
+                    }
+                }
+                return 0;
+            }
+
+            searchInput.addEventListener('keyup', filterTable);
+            destinationFilter.addEventListener('change', filterTable);
+            sortSelect.addEventListener('change', sortTable);
+        });
+        </script>
+    </div>
+    {% endblock %}
+
+    <!-- Scripts -->
+    <script src="{{ asset('js/jquery-3.4.1.min.js') }}"></script>
+    <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
+</body>
+</html>
+{% endblock %}

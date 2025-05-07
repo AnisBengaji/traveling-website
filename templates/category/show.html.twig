@@ -1,0 +1,113 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Category - {{ category.nomCategory }}{% endblock %}
+
+{% block body %}
+<div class="hero_area">
+  <!-- header section strats -->
+  <header class="header_section">
+    <div class="header_top">
+      <div class="container-fluid">
+        <div class="contact_nav">
+          <a href="">
+            <i class="fa fa-phone" aria-hidden="true"></i>
+            <span>
+              Call : +01 123455678990
+            </span>
+          </a>
+          <a href="">
+            <i class="fa fa-envelope" aria-hidden="true"></i>
+            <span>
+              Email : demo@gmail.com
+            </span>
+          </a>
+          <a href="">
+            <i class="fa fa-map-marker" aria-hidden="true"></i>
+            <span>
+              Location
+            </span>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="header_bottom">
+      <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg custom_nav-container">
+          <a class="navbar-brand" href="index.html">
+            <span>
+              Carint
+            </span>
+          </a>
+
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class=""></span>
+          </button>
+
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav">
+             <li class="nav-item active">
+                <a class="nav-link" href="{{ path('admin_dashboard') }}">Admin dash </a>
+              </li>
+              <li class="nav-item active">
+                <a class="nav-link" href="{{ path('app_publication_index') }}">Publication <span class="sr-only">(current)</span></a>
+              </li>
+              
+              <li class="nav-item">
+                <a class="nav-link" href="#"> <i class="fa fa-user" aria-hidden="true"></i> Login</a>
+              </li>
+              <form class="form-inline">
+                <button class="btn my-2 my-sm-0 nav_search-btn" type="submit">
+                  <i class="fa fa-search" aria-hidden="true"></i>
+                </button>
+              </form>
+            </ul>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </header>
+  <!-- end header section -->
+</div>
+
+<div class="container py-5">
+  <h1 class="text-center mb-5 fw-bold text-primary">Category Details</h1>
+
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-primary text-white p-4">
+          <h2 class="mb-0 fw-semibold">{{ category.nomCategory }}</h2>
+        </div>
+        <div class="card-body p-4">
+          <table class="table table-striped table-hover mb-4">
+            <tbody>
+              <tr>
+                <th scope="row" class="fw-semibold text-muted">ID</th>
+                <td>{{ category.idCategory }}</td>
+              </tr>
+              <tr>
+                <th scope="row" class="fw-semibold text-muted">Name</th>
+                <td>{{ category.nomCategory }}</td>
+              </tr>
+              <tr>
+                <th scope="row" class="fw-semibold text-muted">Description</th>
+                <td>{{ category.description ?: 'No description available.' }}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="d-flex justify-content-between flex-wrap gap-2">
+            <a href="{{ path('app_category_index') }}" class="btn btn-secondary rounded-pill">
+              <i class="fa fa-arrow-left me-2"></i>Back to List
+            </a>
+            <a href="{{ path('app_category_edit', {'idCategory': category.idCategory}) }}" class="btn btn-primary rounded-pill">
+              <i class="fa fa-edit me-2"></i>Edit Category
+            </a>
+            {{ include('category/_delete_form.html.twig', {'button_class': 'btn btn-danger rounded-pill'}) }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

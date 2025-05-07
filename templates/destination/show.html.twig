@@ -1,0 +1,52 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Détails de la Destination{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h2 class="mb-0">Détails de la Destination</h2>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered">
+                <tbody>
+                    <tr>
+                        <th scope="row">ID</th>
+                        <td>{{ destination.idDestination }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Pays</th>
+                        <td>{{ destination.pays }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Ville</th>
+                        <td>{{ destination.ville }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Code Postal</th>
+                        <td>{{ destination.codePostal }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Latitude</th>
+                        <td>{{ destination.latitude }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Longitude</th>
+                        <td>{{ destination.longitude }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer d-flex justify-content-between">
+            <a href="{{ path('app_destination_index') }}" class="btn btn-secondary">Retour à la liste</a>
+            <div>
+                <a href="{{ path('app_destination_edit', {'idDestination': destination.idDestination}) }}" class="btn btn-warning me-2">Modifier</a>
+<form method="post" action="{{ path('app_destination_delete', {'idDestination': destination.idDestination}) }}" onsubmit="return confirm('Voulez-vous vraiment supprimer cette destination ?');" style="display:inline-block;">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ destination.idDestination) }}">
+                                    <button class="btn btn-danger btn-sm">Supprimer</button>
+                                </form>            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

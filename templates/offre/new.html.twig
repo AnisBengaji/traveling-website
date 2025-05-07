@@ -1,0 +1,62 @@
+      
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer une nouvelle offre{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1 class="mb-4">Créer une nouvelle offre</h1>
+
+        {# Messages flash #}
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success" role="alert">{{ message }}</div>
+        {% endfor %}
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger" role="alert">{{ message }}</div>
+        {% endfor %}
+
+        {# Formulaire avec gestion des erreurs #}
+        {{ form_start(form, {'attr': {'class': 'form'}}) }}
+            <div class="mb-3">
+                {{ form_row(form.titre, {
+                    'label': 'Titre',
+                    'label_attr': {'class': 'form-label'},
+                    'attr': {'class': 'form-control'}
+                }) }}
+                {{ form_errors(form.titre) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_row(form.description, {
+                    'label': 'Description',
+                    'label_attr': {'class': 'form-label'},
+                    'attr': {'class': 'form-control'}
+                }) }}
+                {{ form_errors(form.description) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_row(form.prix, {
+                    'label': 'Prix',
+                    'label_attr': {'class': 'form-label'},
+                    'attr': {'class': 'form-control'}
+                }) }}
+                {{ form_errors(form.prix) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_row(form.destination, {
+                    'label': 'Destination',
+                    'label_attr': {'class': 'form-label'},
+                    'attr': {'class': 'form-control'}
+                }) }}
+                {{ form_errors(form.destination) }}
+            </div>
+
+            <div class="mt-4">
+                <button type="submit" class="btn btn-success">Enregistrer</button>
+                <a href="{{ path('app_offre_index') }}" class="btn btn-secondary ms-2">Retour à la liste</a>
+            </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Détails de l'Événement</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        .hero-section {
+            background: linear-gradient(135deg, #6b48ff 0%, #00a8ff 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .detail-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding: 0.8rem;
+            border-radius: 8px;
+            transition: background-color 0.2s;
+        }
+
+        .detail-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .detail-icon {
+            font-size: 1.5rem;
+            margin-right: 1rem;
+            color: #6b48ff;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .price-tag {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #28a745;
+            background: #e8f5e9;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .description-box {
+            background: #f8f9fa;
+            border-left: 4px solid #6b48ff;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <div class="container py-5">
+        <div class="hero-section text-center">
+            <h1 class="display-4 fw-bold mb-4">{{ evenement.nom }}</h1>
+            <div class="d-flex justify-content-center gap-3">
+                <span class="badge bg-white text-dark fs-6">
+                    <i class="bi bi-calendar-event me-2"></i>
+                    {{ evenement.DateEvenementDepart|date('d/m/Y') }} - {{ evenement.DateEvenementArriver|date('d/m/Y') }}
+                </span>
+                <span class="badge bg-white text-dark fs-6">
+                    <i class="bi bi-geo-alt me-2"></i>
+                    {{ evenement.lieu }}
+                </span>
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="detail-card">
+                    <div class="detail-item">
+                        <i class="bi bi-info-circle detail-icon"></i>
+                        <div>
+                            <h5 class="mb-1 text-muted">Description</h5>
+                            <p class="mb-0 description-box">{{ evenement.Description }}</p>
+                        </div>
+                    </div>
+
+                    <div class="detail-item">
+                        <i class="bi bi-cash-coin detail-icon"></i>
+                        <div>
+                            <h5 class="mb-1 text-muted">Prix</h5>
+                            <div class="price-tag">
+                                {{ evenement.price }} DT
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="detail-item">
+                        <i class="bi bi-geo detail-icon"></i>
+                        <div>
+                            <h5 class="mb-1 text-muted">Coordonnées GPS</h5>
+                            <div class="text-muted">
+                                Latitude: {{ evenement.latitude|number_format(4) }}<br>
+                                Longitude: {{ evenement.longitude|number_format(4) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="{{ path('evenement_index') }}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left me-2"></i>Retour à la liste
+                    </a>
+                   
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

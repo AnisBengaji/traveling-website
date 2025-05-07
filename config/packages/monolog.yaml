@@ -1,0 +1,7 @@
+monolog:
+    handlers:
+        main:
+            type: stream
+            path: "php://stdout"
+            level: debug  # You can adjust the level to suit your needs (debug, info, etc.)
+            channels: ["security"]  # Ensure this includes the channel your listener uses

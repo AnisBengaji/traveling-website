@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Facture Réservation - {{ reservation.evenement.nom }}</title>
+    <style>
+        body {
+            font-family: DejaVu Sans, sans-serif;
+            font-size: 13px;
+            background-color: #fff;
+            color: #212529;
+            margin: 0;
+            padding: 40px;
+        }
+        .header, .footer {
+            background-color: #f8f9fa;
+            padding: 20px 30px;
+            border-radius: 8px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #0d6efd;
+        }
+        .agency-info h2 {
+            margin: 0;
+            color: #0d6efd;
+            font-size: 22px;
+        }
+        .agency-info p {
+            margin: 5px 0;
+            font-size: 12px;
+            color: #6c757d;
+        }
+        .logo {
+            width: 100px;
+        }
+        h3.section-title {
+            border-bottom: 2px solid #0d6efd;
+            padding-bottom: 5px;
+            margin-bottom: 20px;
+            color: #0d6efd;
+            font-size: 18px;
+        }
+        h4 {
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #495057;
+        }
+        .card {
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 30px;
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+        }
+        .row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .col {
+            width: 48%;
+        }
+        .footer {
+            font-size: 12px;
+            text-align: center;
+            color: #6c757d;
+            border-top: 1px solid #dee2e6;
+            margin-top: 30px;
+            padding-top: 15px;
+        }
+        .badge {
+            padding: 6px 14px;
+            border-radius: 15px;
+            font-weight: bold;
+            display: inline-block;
+            font-size: 11px;
+        }
+        .badge-success {
+            background-color: #28a745;
+            color: #fff;
+        }
+        .badge-warning {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 13px;
+        }
+        th, td {
+            padding: 10px;
+            border-bottom: 1px solid #dee2e6;
+            text-align: left;
+        }
+        .text-end {
+            text-align: right;
+        }
+        .total {
+            font-size: 16px;
+            font-weight: bold;
+            color: #28a745;
+        }
+        .date {
+            font-size: 12px;
+            color: #6c757d;
+            text-align: right;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <div class="header">
+        <div class="agency-info">
+            <h2>Trippin</h2>
+            <p>
+                Adresse de l'agence<br>
+                Tél : +216 12 345 678<br>
+                Email : contact@agence.tn
+            </p>
+        </div>
+        <div>
+            <img src="{{ asset('images/Logo.png') }}" alt="Logo Agence" class="logo">
+        </div>
+    </div>
+
+
+
+    <!-- FACTURE -->
+    <div class="card">
+        <h3 class="section-title">Facture - Réservation n°{{ reservation.id }}</h3>
+
+        <div class="row">
+            <div class="col">
+                <h4>Client</h4>
+                <p>
+                    {{ reservation.user.prenom }} {{ reservation.user.nom }}<br>
+                    {{ reservation.user.email }}
+                </p>
+            </div>
+            <div class="col">
+                <h4>Événement</h4>
+                <p>
+                    {{ reservation.evenement.nom }}<br>
+                    Lieu : {{ reservation.evenement.lieu }}
+                </p>
+            </div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Montant (DT)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Réservation pour l'événement "{{ reservation.evenement.nom }}"</td>
+                    <td>{{ reservation.priceTotal }}</td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="text-end">
+                        <span class="badge {{ reservation.status == 'confirmée' ? 'badge-success' : 'badge-warning' }}">
+                            {{ reservation.status|capitalize }}
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-end"><strong>Total à payer</strong></td>
+                    <td class="total">{{ reservation.priceTotal }} DT</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p style="margin-top: 20px;">
+            <strong>Mode de paiement :</strong> {{ reservation.modePaiement|capitalize }}
+        </p>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        Merci pour votre confiance.<br>
+        Cette facture est générée automatiquement et ne nécessite pas de signature.
+           <div class="date">
+        Date : {{ "now"|date("d/m/Y") }}
+    </div>
+<img src="{{ qrCode }}" 
+     alt="QR Code" 
+     style="
+        display: block;
+        margin: 30px auto;
+        padding: 15px;
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        max-width: 250px;
+        width: 100%;
+        height: auto;
+     "
+     onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 12px rgba(0, 0, 0, 0.15)'"
+     onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 6px rgba(0, 0, 0, 0.1)'"
+     onclick="this.style.cursor='pointer'">
+    <p>Scannez le QR code pour plus de détails sur votre réservation.</p>
+    <p>Pour toute question, n'hésitez pas à nous contacter.</p>
+
+</body>
+</html>

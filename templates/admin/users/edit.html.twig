@@ -1,0 +1,174 @@
+{% extends 'admin/admin_dashboard.html.twig' %}
+
+{% block content %}
+<!-- Sidebar -->
+<div class="sidebar">
+    <div class="brand">
+        <a href="{{ path('landing_index') }}" class="text-white text-decoration-none">Trip In Admin</a>
+    </div>
+    <ul class="nav flex-column">
+        <li class="nav-item">
+            <a class="nav-link" href="{{ path('admin_dashboard') }}">
+                <i class="fa fa-tachometer me-2" aria-hidden="true"></i> Dashboard
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" href="{{ path('admin_users') }}">
+                <i class="fa fa-users me-2" aria-hidden="true"></i> Users
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="fa fa-file-text me-2" aria-hidden="true"></i> Publications
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="fa fa-list me-2" aria-hidden="true"></i> Destinations
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="fa fa-cogs me-2" aria-hidden="true"></i> Offers
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="fa fa-envelope me-2" aria-hidden="true"></i> Contact Requests
+            </a>
+        </li>
+        <li class="nav-item">
+        <form method="post" action="{{ path('app_logout') }}">
+            <input type="hidden" name="_token" value="{{ csrf_token('logout') }}">
+            <button type="submit" class="nav-link btn btn-link p-0 text-start text-white" style="width: 100%;">
+            <i class="fa fa-sign-out me-2" aria-hidden="true"></i> Logout
+            </button>
+        </form>
+</li>
+
+    </ul>
+</div>
+
+<!-- Topbar -->
+<div class="topbar">
+    <div class="d-flex justify-content-between align-items-center">
+        <h4 class="mb-0">Edit User</h4>
+        <div>
+            <span class="me-3"><i class="fa fa-user me-1" aria-hidden="true"></i> Admin User</span>
+            <form method="post" action="{{ path('app_logout') }}" style="display: inline;">
+                <input type="hidden" name="_token" value="{{ csrf_token('logout') }}">
+                <button type="submit" class="btn btn-sm btn-outline-danger">
+                    <i class="fa fa-sign-out" aria-hidden="true"></i> Logout
+                </button>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="dashboard-card">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h3>Edit User: {{ user.prenom }} {{ user.nom }}</h3>
+                        <a href="{{ path('admin_users') }}" class="btn btn-admin">
+                            <i class="fa fa-arrow-left me-2" aria-hidden="true"></i> Back to Users
+                        </a>
+                    </div>
+
+                    {% for message in app.flashes('success') %}
+                        <div class="alert alert-success">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+
+                    {{ form_start(form, {'attr': {'class': 'user-edit-form', 'novalidate': 'novalidate'}}) }}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    {{ form_label(form.prenom) }}
+                                    {{ form_widget(form.prenom) }}
+                                    {{ form_errors(form.prenom) }}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    {{ form_label(form.nom) }}
+                                    {{ form_widget(form.nom) }}
+                                    {{ form_errors(form.nom) }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    {{ form_label(form.email) }}
+                                    {{ form_widget(form.email) }}
+                                    {{ form_errors(form.email) }}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    {{ form_label(form.numTel) }}
+                                    {{ form_widget(form.numTel) }}
+                                    {{ form_errors(form.numTel) }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    {{ form_label(form.role) }}
+                                    {{ form_widget(form.role) }}
+                                    {{ form_errors(form.role) }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group mt-4">
+                            <button type="submit" class="btn btn-admin">
+                                <i class="fa fa-save me-2" aria-hidden="true"></i> Save Changes
+                            </button>
+                        </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Additional Styles -->
+<style>
+    .user-edit-form {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    .form-group label {
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+    .form-control {
+        border-radius: 4px;
+        border: 1px solid #ced4da;
+        padding: 0.5rem 0.75rem;
+    }
+    .form-control:focus {
+        border-color: #80bdff;
+        box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+    }
+    .alert {
+        border-radius: 4px;
+        margin-bottom: 1rem;
+    }
+    .form-error {
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+</style>
+{% endblock %} 

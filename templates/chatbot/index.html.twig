@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trripin - Votre Chatbot de Voyage</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .chat-message-user {
+            background-color: #007bff;
+            color: white;
+            border-radius: 15px 15px 0 15px;
+            padding: 10px 15px;
+            max-width: 70%;
+            margin-left: auto;
+            margin-bottom: 10px;
+        }
+        .chat-message-bot {
+            background-color: #e5e7eb;
+            color: black;
+            border-radius: 15px 15px 15px 0;
+            padding: 10px 15px;
+            max-width: 70%;
+            margin-right: auto;
+            margin-bottom: 10px;
+        }
+        #chatbox {
+            height: 400px;
+            overflow-y: auto;
+            background: #f9fafb;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .keyword-btn {
+            transition: transform 0.2s, background-color 0.2s;
+            background-color: #007bff;
+        }
+        .keyword-btn:hover {
+            transform: scale(1.05);
+            background-color: #2563eb;
+        }
+        #input {
+            border: 1px solid #d1d5db;
+            border-radius: 9999px;
+            padding: 10px 20px;
+            flex-grow: 1;
+        }
+        #input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+        }
+        .send-btn {
+            border-radius: 9999px;
+            padding: 10px 20px;
+            background-color: #3b82f6;
+            color: white;
+            transition: background-color 0.2s;
+        }
+        .send-btn:hover {
+            background-color: #2563eb;
+        }
+        .error-message {
+            background-color: #fee2e2;
+            color: #dc2626;
+            border-radius: 15px;
+            padding: 10px 15px;
+            max-width: 70%;
+            margin-right: auto;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="max-w-2xl mx-auto mt-10 p-4">
+        <h1 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+            <svg class="w-6 h-6 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+            </svg>
+            Trripin - Votre Assistant Voyage
+        </h1>
+        <div id="chatbox" class="mb-4"></div>
+        <div class="flex space-x-2 mb-4">
+            <input id="input" placeholder="Demandez nos offres, réservations ou contactez-nous..." class="shadow-sm">
+            <button id="send-btn" class="send-btn">Envoyer</button>
+        </div>
+        <div id="keywords" class="flex flex-wrap gap-2">
+           <button class="keyword-btn bg-blue-500 text-white px-4 py-2 rounded-full" data-keyword="salut">Salut</button>
+<button class="keyword-btn bg-blue-500 text-white px-4 py-2 rounded-full" data-keyword="aide">Aide</button>
+<button class="keyword-btn bg-blue-500 text-white px-4 py-2 rounded-full" data-keyword="contact">Contact</button>
+<button class="keyword-btn bg-blue-500 text-white px-4 py-2 rounded-full" data-keyword="offres">Offres</button>
+<button class="keyword-btn bg-blue-500 text-white px-4 py-2 rounded-full" data-keyword="réservation">Réservation</button>
+<button class="keyword-btn bg-blue-500 text-white px-4 py-2 rounded-full" data-keyword="prix">Prix</button>
+<button class="keyword-btn bg-blue-500 text-white px-4 py-2 rounded-full" data-keyword="événements">Événements</button>
+        </div>
+    </div>
+
+    <script>
+        const chatbox = document.getElementById('chatbox');
+        const input = document.getElementById('input');
+        const sendBtn = document.getElementById('send-btn');
+
+        async function sendMessage(message) {
+            if (!message.trim()) return;
+
+            // Afficher le message de l'utilisateur
+            const userMessage = document.createElement('div');
+            userMessage.className = 'chat-message-user';
+            userMessage.innerHTML = `<b>Vous :</b> ${message}`;
+            chatbox.appendChild(userMessage);
+
+            try {
+                // Mock API response for "réservation" (replace with actual fetch in production)
+                let reply;
+                if (message.toLowerCase() === 'réservation') {
+                    reply = 'Pour effectuer une réservation, contactez-nous à contact@trripin.com ou visitez notre site !';
+                } else {
+                    // Simulate API call for other keywords
+                    const response = await fetch('/api/chatbot', {
+                        method: 'POST',
+                        body: new URLSearchParams({ message })
+                    });
+                    if (!response.ok) throw new Error('Erreur réseau');
+                    const data = await response.json();
+                    reply = data.reply || `Vous avez dit : ${message}. Comment puis-je vous aider ?`;
+                }
+
+                // Afficher la réponse du bot
+                const botMessage = document.createElement('div');
+                botMessage.className = 'chat-message-bot';
+                botMessage.innerHTML = `<b>Trripin :</b> ${reply}`;
+                chatbox.appendChild(botMessage);
+            } catch (error) {
+                // Afficher une erreur
+                const errorMessage = document.createElement('div');
+                errorMessage.className = 'error-message';
+                errorMessage.innerHTML = `<b>Trripin :</b> Erreur : ${error.message}`;
+                chatbox.appendChild(errorMessage);
+            }
+
+            // Défilement automatique
+            chatbox.scrollTop = chatbox.scrollHeight;
+        }
+
+        // Gestion des événements
+        function setupEventListeners() {
+            // Gestion des boutons de mots-clés
+            document.getElementById('keywords').addEventListener('click', (e) => {
+                if (e.target.classList.contains('keyword-btn')) {
+                    const keyword = e.target.dataset.keyword;
+                    sendMessage(keyword);
+                }
+            });
+
+            // Gestion de la saisie (Enter)
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    sendMessage(input.value);
+                    input.value = '';
+                }
+            });
+
+            // Gestion du bouton Envoyer
+            sendBtn.addEventListener('click', () => {
+                sendMessage(input.value);
+                input.value = '';
+            });
+        }
+
+        // Initialiser les écouteurs une seule fois
+        setupEventListeners();
+    </script>
+</body>
+</html>

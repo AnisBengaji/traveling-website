@@ -1,0 +1,114 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer un nouveau tutoriel{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1 class="mb-4">Créer un nouveau tutoriel</h1>
+
+        {# Messages flash avec fermeture #}
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+            </div>
+        {% endfor %}
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+            </div>
+        {% endfor %}
+
+        {# Formulaire optimisé #}
+        {{ form_start(form, {
+            'attr': {
+                'class': 'form needs-validation',
+                'novalidate': 'novalidate'
+            }
+        }) }}
+            <div class="mb-3">
+                {{ form_row(form.nom_tutorial, {
+                    'label': 'Nom du tutoriel',
+                    'label_attr': {'class': 'form-label'},
+                    'attr': {
+                        'class': 'form-control',
+                        'placeholder': 'Entrez le nom du tutoriel',
+                        'required': 'required'
+                    }
+                }) }}
+                {{ form_errors(form.nom_tutorial) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_row(form.dateDebut, {
+                    'label': 'Date de début',
+                    'label_attr': {'class': 'form-label'},
+                    'attr': {
+                        'class': 'form-control',
+                        'placeholder': 'Sélectionnez la date de début'
+                    }
+                }) }}
+                {{ form_errors(form.dateDebut) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_row(form.dateFin, {
+                    'label': 'Date de fin',
+                    'label_attr': {'class': 'form-label'},
+                    'attr': {
+                        'class': 'form-control',
+                        'placeholder': 'Sélectionnez la date de fin'
+                    }
+                }) }}
+                {{ form_errors(form.dateFin) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_row(form.prix_tutorial, {
+                    'label': 'Prix (€)',
+                    'label_attr': {'class': 'form-label'},
+                    'attr': {
+                        'class': 'form-control',
+                        'placeholder': 'Ex: 49.99',
+                        'step': '0.01',
+                        'min': '0',
+                        'required': 'required'
+                    }
+                }) }}
+                {{ form_errors(form.prix_tutorial) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_row(form.offre, {
+                    'label': 'Offre associée',
+                    'label_attr': {'class': 'form-label'},
+                    'attr': {
+                        'class': 'form-select',
+                        'placeholder': 'Sélectionnez une offre'
+                    }
+                }) }}
+                {{ form_errors(form.offre) }}
+            </div>
+
+            {# Boutons d'action #}
+            <div class="mt-4 d-flex gap-2">
+                <button type="submit" class="btn btn-success">Enregistrer</button>
+                <a href="{{ path('app_tutorial_index') }}" class="btn btn-secondary">Retour à la liste</a>
+            </div>
+        {{ form_end(form) }}
+    </div>
+
+    {# Script pour améliorer les champs de date si besoin #}
+    {% block javascripts %}
+        {{ parent() }}
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const dateInputs = document.querySelectorAll('input[type="date"]');
+                dateInputs.forEach(input => {
+                    input.classList.add('form-control');
+                });
+            });
+        </script>
+    {% endblock %}
+{% endblock %}

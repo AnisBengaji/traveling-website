@@ -1,0 +1,54 @@
+service.title: Carint - Communauté de Services
+post.search: Rechercher des publications...
+language.select: Sélectionner la langue
+language.en: Anglais
+language.fr: Français
+language.es: Espagnol
+post.share: Partagez vos pensées...
+post.create: Créer une Publication
+post.title: Titre
+post.title.placeholder: Titre de la publication
+post.category: Catégorie
+post.content: Contenu
+post.content.placeholder: Qu'est-ce qui vous préoccupe ?
+post.image: Image (facultatif)
+post.submit: Publier
+post.recent: Publications Récentes
+user.current: Utilisateur Actuel
+user.not_logged_in: Non connecté
+filter.explore: Explorer les Discussions
+filter.all: Tous
+user.anonymous: Anonyme
+post.edit: Modifier
+post.like: J'aime
+post.dislike: Je n'aime pas
+post.comment: Commenter
+post.none: Aucune publication disponible pour le moment.
+post.search_none: Aucune publication trouvée pour votre recherche.
+comment.none: Aucun commentaire pour l'instant.
+comment.login_required: Veuillez vous connecter pour commenter.
+comment.add: Ajouter un commentaire...
+comment.submit: Publier
+comment.not_loaded: Commentaires non chargés pour les résultats de recherche.
+post.publication: Publication
+post.liked: J'aime !
+post.like_removed: J'aime retiré !
+post.disliked: Je n'aime pas !
+post.dislike_removed: Je n'aime pas retiré !
+post.link_copied: Lien copié !
+post.copy_link: Copier ce lien
+post.published: Publication Publiée !
+post.published_message: Votre publication est maintenant en ligne.
+comment.posted: Commentaire Publié !
+error.title: Erreur
+error.like_failed: Échec de la mise à jour du statut de j'aime. Veuillez réessayer.
+error.dislike_failed: Échec de la mise à jour du statut de je n'aime pas. Veuillez réessayer.
+error.search_failed: Échec de la recherche de publications.
+error.form_incomplete: Formulaire Incomplet
+error.form_required: Veuillez remplir tous les champs requis.
+error.comment_required: Veuillez entrer un commentaire.
+error.invalid_response: Le serveur a renvoyé des données incomplètes. Veuillez réessayer.
+error.invalid_response_title: Réponse Invalide
+error.unexpected: Une erreur inattendue s'est produite. Veuillez réessayer.
+error.post_failed: Échec de la publication. Veuillez réessayer.
+error.comment_failed: Échec de la publication du commentaire.

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifier {{ evenement.nom }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-light">
+    <div class="container py-5">
+        <div class="card shadow-lg border-0">
+            <!-- En-tête de la carte -->
+            <div class="card-header bg-primary text-white py-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h1 class="h4 mb-0">
+                        <i class="fas fa-calendar-edit me-2"></i>
+                        Modification : {{ evenement.nom }}
+                    </h1>
+                    <a href="{{ path('evenement_admin') }}" class="btn btn-light btn-sm">
+                        <i class="fas fa-arrow-left me-2"></i>Retour
+                    </a>
+                </div>
+            </div>
+
+            <!-- Corps de la carte -->
+            <div class="card-body p-4">
+                {{ form_start(form, {'enctype': 'multipart/form-data'}) }}
+
+                    <div class="row g-4">
+
+                        <!-- Colonne Gauche - Informations principales -->
+                        <div class="col-md-8">
+                            <!-- Carte Informations de base -->
+                            <div class="card border-primary mb-4">
+                                <div class="card-header bg-light py-2">
+                                    <h2 class="h6 mb-0">
+                                        <i class="fas fa-info-circle me-2 text-primary"></i>
+                                        Informations de base
+                                    </h2>
+                                </div>
+                                <div class="card-body">
+                                    <!-- Nom -->
+                                    <div class="mb-4">
+                                        {{ form_label(form.nom, null, {'label_attr': {'class': 'form-label'}}) }}
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-primary text-white">
+                                                <i class="fas fa-tag"></i>
+                                            </span>
+                                            {{ form_widget(form.nom, {'attr': {'class': 'form-control'}}) }}
+                                        </div>
+                                        {{ form_errors(form.nom) }}
+                                    </div>
+
+                                    <!-- Description -->
+                                    <div class="mb-4">
+                                        {{ form_label(form.Description, null, {'label_attr': {'class': 'form-label'}}) }}
+                                        {{ form_widget(form.Description, { 
+                                            'attr': {
+                                                'class': 'form-control',
+                                                'rows': 4,
+                                                'placeholder': 'Description détaillée...'
+                                            } 
+                                        }) }}
+                                        {{ form_errors(form.Description) }}
+                                    </div>
+
+                                    <!-- Image -->
+                                    <div class="mb-4">
+                                        {{ form_label(form.imageFile, null, {'label_attr': {'class': 'form-label'}}) }}
+                                        <div class="custom-file">
+                                            {{ form_widget(form.imageFile, {
+                                                'attr': {
+                                                    'class': 'form-control',
+                                                    'accept': 'image/*'
+                                                }
+                                            }) }}
+                                        </div>
+                                        {{ form_errors(form.imageFile) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Colonne Droite - Tarification -->
+                        <div class="col-md-4">
+                            <!-- Carte Tarification -->
+                            <div class="card border-success mb-4">
+                                <div class="card-header bg-light py-2">
+                                    <h2 class="h6 mb-0">
+                                        <i class="fas fa-euro-sign me-2 text-success"></i>
+                                        Tarification
+                                    </h2>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        {{ form_label(form.price, null, {'label_attr': {'class': 'form-label'}}) }}
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-success text-white">
+                                                <i class="fas fa-coins"></i>
+                                            </span>
+                                            {{ form_widget(form.price, {'attr': {'class': 'form-control'}}) }}
+                                        </div>
+                                        {{ form_errors(form.price) }}
+                                        <small class="form-text text-muted">Prix en euros</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Dates -->
+                        <div class="col-12">
+                            <!-- Carte Période -->
+                            <div class="card border-warning mb-4">
+                                <div class="card-header bg-light py-2">
+                                    <h2 class="h6 mb-0">
+                                        <i class="fas fa-clock me-2 text-warning"></i>
+                                        Période
+                                    </h2>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row g-3">
+                                        <!-- Date de début -->
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                {{ form_label(form.Date_EvenementDepart, null, {'label_attr': {'class': 'form-label'}}) }}
+                                                <div class="input-group">
+                                                    <span class="input-group-text">
+                                                        <i class="fas fa-play"></i>
+                                                    </span>
+                                                    {{ form_widget(form.Date_EvenementDepart, {'attr': {'class': 'form-control'}}) }}
+                                                </div>
+                                                {{ form_errors(form.Date_EvenementDepart) }}
+                                            </div>
+                                        </div>
+
+                                        <!-- Date de fin -->
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                {{ form_label(form.Date_EvenementArriver, null, {'label_attr': {'class': 'form-label'}}) }}
+                                                <div class="input-group">
+                                                    <span class="input-group-text">
+                                                        <i class="fas fa-stop"></i>
+                                                    </span>
+                                                    {{ form_widget(form.Date_EvenementArriver, {'attr': {'class': 'form-control'}}) }}
+                                                </div>
+                                                {{ form_errors(form.Date_EvenementArriver) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Localisation -->
+                        <div class="col-12">
+                            <!-- Carte Localisation -->
+                            <div class="card border-info mb-4">
+                                <div class="card-header bg-light py-2">
+                                    <h2 class="h6 mb-0">
+                                        <i class="fas fa-map-marked-alt me-2 text-info"></i>
+                                        Localisation
+                                    </h2>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row g-3">
+                                        <!-- Lieu -->
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                {{ form_label(form.lieu, null, {'label_attr': {'class': 'form-label'}}) }}
+                                                <div class="input-group">
+                                                    <span class="input-group-text">
+                                                        <i class="fas fa-map-marker-alt"></i>
+                                                    </span>
+                                                    {{ form_widget(form.lieu, {'attr': {'class': 'form-control'}}) }}
+                                                </div>
+                                                {{ form_errors(form.lieu) }}
+                                            </div>
+                                        </div>
+
+                                        <!-- Coordonnées -->
+                                        <div class="col-md-3">
+                                            <div class="mb-3">
+                                                {{ form_label(form.latitude, null, {'label_attr': {'class': 'form-label'}}) }}
+                                                <div class="input-group">
+                                                    <span class="input-group-text">
+                                                        <i class="fas fa-globe-europe"></i>
+                                                    </span>
+                                                    {{ form_widget(form.latitude, {'attr': {'class': 'form-control'}}) }}
+                                                </div>
+                                                {{ form_errors(form.latitude) }}
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <div class="mb-3">
+                                                {{ form_label(form.longitude, null, {'label_attr': {'class': 'form-label'}}) }}
+                                                <div class="input-group">
+                                                    <span class="input-group-text">
+                                                        <i class="fas fa-globe-americas"></i>
+                                                    </span>
+                                                    {{ form_widget(form.longitude, {'attr': {'class': 'form-control'}}) }}
+                                                </div>
+                                                {{ form_errors(form.longitude) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bouton de soumission -->
+                        <div class="col-12">
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary btn-lg py-3">
+                                    <i class="fas fa-save me-2"></i>
+                                    Enregistrer les modifications
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

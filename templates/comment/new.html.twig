@@ -1,0 +1,27 @@
+{% extends 'admin/admin_dashboard.html.twig' %}
+
+{% block title %}New Comment{% endblock %}
+
+{% block content %}
+    <div class="main-content">
+        <div class="container-fluid">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="dashboard-card">
+                        <h3>Create New Comment</h3>
+                        
+                        <div class="mt-4">
+                            {{ include('comment/_form.html.twig') }}
+                        </div>
+
+                        <div class="mt-4">
+                            <a href="{{ path('app_comment_index') }}" class="btn text-white px-4" style="background-color: #3a6ea5;">
+                                <i class="fa fa-arrow-left me-1"></i> Back to list
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

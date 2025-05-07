@@ -1,0 +1,202 @@
+{% extends 'admin/admin_dashboard.html.twig' %}
+
+{% block title %}New Publication - Admin{% endblock %}
+
+{% block content %}
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="brand">
+      <a href="{{ path('landing_index') }}" class="text-white text-decoration-none">Carint Admin</a>
+    </div>
+    <ul class="nav flex-column">
+      <li class="nav-item">
+        <a class="nav-link" href="{{ path('admin_dashboard') }}">
+          <i class="fa fa-tachometer me-2" aria-hidden="true"></i> Dashboard
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link active" href="{{ path('app_publication_index') }}">
+          <i class="fa fa-file-text me-2" aria-hidden="true"></i> Publications
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ path('app_category_index') }}">
+          <i class="fa fa-list me-2" aria-hidden="true"></i> Destinations
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ path('app_offre_index') }}">
+          <i class="fa fa-cogs me-2" aria-hidden="true"></i> Offres
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ path('landing_contact') }}">
+          <i class="fa fa-envelope me-2" aria-hidden="true"></i> Contact Requests
+        </a>
+      </li>
+      <li class="nav-item">
+        <form method="post" action="{{ path('app_logout') }}">
+          <input type="hidden" name="_token" value="{{ csrf_token('logout') }}">
+          <button type="submit" class="nav-link btn btn-link p-0 text-start text-white" style="width: 100%;">
+            <i class="fa fa-sign-out me-2" aria-hidden="true"></i> Logout
+          </button>
+        </form>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="d-flex justify-content-between align-items-center">
+      <h4 class="mb-0">New Publication</h4>
+      <div>
+        <span class="me-3"><i class="fa fa-user me-1" aria-hidden="true"></i> Admin User</span>
+        <a href="{{ path('app_logout') }}" class="btn btn-sm btn-outline-danger"><i class="fa fa-sign-out" aria-hidden="true"></i> Logout</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="container-fluid">
+      <div class="row mb-4">
+        <div class="col-12">
+          <div class="dashboard-card">
+            <h3>Create New Publication</h3>
+            
+            {{ include('publication/_form.html.twig') }}
+            
+            <div class="mt-4">
+              <a href="{{ path('app_publication_index') }}" class="btn btn-admin">
+                <i class="fa fa-arrow-left me-1"></i> Back to Publications
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .dashboard-card {
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .form-control {
+      border: 1px solid #ced4da;
+      border-radius: 6px;
+      padding: 10px 12px;
+      font-size: 14px;
+      transition: border-color 0.3s, box-shadow 0.3s;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .form-control:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+      outline: none;
+    }
+
+    .form-control::placeholder {
+      color: #6c757d;
+      opacity: 0.7;
+    }
+
+    select.form-control {
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      background-size: 16px;
+      padding-right: 36px;
+    }
+
+    textarea.form-control {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .btn-primary {
+      background-color: #007bff;
+      border: none;
+      border-radius: 6px;
+      padding: 10px 20px;
+      font-weight: 600;
+      transition: background-color 0.3s, transform 0.2s;
+    }
+
+    .btn-primary:hover {
+      background-color: #0056b3;
+      transform: translateY(-1px);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .btn-admin {
+      background-color: #6c757d;
+      color: #fff;
+      border-radius: 6px;
+      padding: 10px 20px;
+      font-weight: 600;
+      transition: background-color 0.3s, transform 0.2s;
+    }
+
+    .btn-admin:hover {
+      background-color: #5a6268;
+      transform: translateY(-1px);
+    }
+
+    .btn-admin:active {
+      transform: translateY(0);
+    }
+
+    .form-check {
+      margin-bottom: 12px;
+    }
+
+    .form-check-input {
+      margin-top: 4px;
+      cursor: pointer;
+    }
+
+    .form-check-label {
+      cursor: pointer;
+      color: #333;
+    }
+
+    @media (max-width: 576px) {
+      .dashboard-card {
+        padding: 16px;
+      }
+
+      .form-control {
+        font-size: 13px;
+        padding: 8px 10px;
+      }
+
+      .btn-primary,
+      .btn-admin {
+        padding: 8px 16px;
+        font-size: 14px;
+      }
+    }
+  </style>
+{% endblock %}

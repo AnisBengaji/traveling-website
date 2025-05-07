@@ -1,0 +1,54 @@
+service.title: Carint - Service Community
+post.search: Search posts...
+language.select: Select language
+language.en: English
+language.fr: French
+language.es: Spanish
+post.share: Share your thoughts...
+post.create: Create a Post
+post.title: Title
+post.title.placeholder: Post title
+post.category: Category
+post.content: Content
+post.content.placeholder: What's on your mind?
+post.image: Image (optional)
+post.submit: Post
+post.recent: Recent Posts
+user.current: Current User
+user.not_logged_in: Not logged in
+filter.explore: Explore Discussions
+filter.all: All
+user.anonymous: Anonymous
+post.edit: Edit
+post.like: Like
+post.dislike: Dislike
+post.comment: Comment
+post.none: No posts available at the moment.
+post.search_none: No posts found for your search.
+comment.none: No comments yet.
+comment.login_required: Please log in to comment.
+comment.add: Add a comment...
+comment.submit: Post
+comment.not_loaded: Comments not loaded for search results.
+post.publication: Publication
+post.liked: Liked!
+post.like_removed: Like removed!
+post.disliked: Disliked!
+post.dislike_removed: Dislike removed!
+post.link_copied: Link copied!
+post.copy_link: Copy this link
+post.published: Post Published!
+post.published_message: Your post is now live.
+comment.posted: Comment Posted!
+error.title: Error
+error.like_failed: Failed to update like status. Please try again.
+error.dislike_failed: Failed to update dislike status. Please try again.
+error.search_failed: Failed to search posts.
+error.form_incomplete: Incomplete Form
+error.form_required: Please fill in all required fields.
+error.comment_required: Please enter a comment.
+error.invalid_response: The server returned incomplete data. Please try again.
+error.invalid_response_title: Invalid Response
+error.unexpected: An unexpected error occurred. Please try again.
+error.post_failed: Failed to post publication. Please try again.
+error.comment_failed: Failed to post comment.

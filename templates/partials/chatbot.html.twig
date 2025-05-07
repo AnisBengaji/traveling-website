@@ -1,0 +1,191 @@
+<div id="chatbot-container" class="chat-window hidden">
+    <div class="chat-header">
+        <h3>Trripin - Assistant Voyage</h3>
+        <button class="close-btn" onclick="document.getElementById('chatbot-container').classList.add('hidden')">×</button>
+    </div>
+    <div id="chatbox" class="chat-body"></div>
+    <div class="chat-footer">
+        <input id="input" placeholder="Demandez nos offres, réservations..." autocomplete="off">
+        <button id="send-btn" class="send-btn"><i class="bi bi-send"></i></button>
+    </div>
+    <div id="keywords" class="p-2 d-flex flex-wrap gap-2">
+        <button class="keyword-btn btn btn-primary btn-sm" data-keyword="salut">Salut</button>
+        <button class="keyword-btn btn btn-primary btn-sm" data-keyword="aide">Aide</button>
+        <button class="keyword-btn btn btn-primary btn-sm" data-keyword="contact">Contact</button>
+        <button class="keyword-btn btn btn-primary btn-sm" data-keyword="offres">Offres</button>
+        <button class="keyword-btn btn btn-primary btn-sm" data-keyword="réservation">Réservation</button>
+        <button class="keyword-btn btn btn-primary btn-sm" data-keyword="prix">Prix</button>
+        <button class="keyword-btn btn btn-primary btn-sm" data-keyword="événements">Événements</button>
+    </div>
+</div>
+
+<style>
+    #chatbot-container.chat-window {
+        position: fixed;
+        bottom: 100px;
+        right: 20px;
+        width: 320px;
+        height: 450px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        display: none;
+        flex-direction: column;
+        overflow: hidden;
+    }
+    #chatbot-container.hidden {
+        display: none;
+    }
+    #chatbot-container:not(.hidden) {
+        display: flex;
+    }
+    .chat-header {
+        background-color: #0084ff;
+        color: white;
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .chat-header h3 {
+        margin: 0;
+        font-size: 16px;
+    }
+    .close-btn {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 20px;
+        cursor: pointer;
+    }
+    #chatbox.chat-body {
+        flex: 1;
+        padding: 10px;
+        overflow-y: auto;
+        background-color: #f1f0f0;
+    }
+    .chat-footer {
+        padding: 10px;
+        border-top: 1px solid #ddd;
+        display: flex;
+        align-items: center;
+    }
+    .chat-footer input {
+        flex: 1;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 20px;
+        outline: none;
+    }
+    .chat-footer .send-btn {
+        background-color: #0084ff;
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        margin-left: 10px;
+        border-radius: 20px;
+        cursor: pointer;
+    }
+    .chat-footer .send-btn:hover {
+        background-color: #006bbf;
+    }
+    .chat-message-user {
+        background-color: #007bff;
+        color: white;
+        border-radius: 15px 15px 0 15px;
+        padding: 10px 15px;
+        max-width: 70%;
+        margin-left: auto;
+        margin-bottom: 10px;
+    }
+    .chat-message-bot {
+        background-color: #e5e7eb;
+        color: black;
+        border-radius: 15px 15px 15px 0;
+        padding: 10px 15px;
+        max-width: 70%;
+        margin-right: auto;
+        margin-bottom: 10px;
+    }
+    .error-message {
+        background-color: #fee2e2;
+        color: #dc2626;
+        border-radius: 15px;
+        padding: 10px 15px;
+        max-width: 70%;
+        margin-right: auto;
+        margin-bottom: 10px;
+    }
+    #keywords {
+        background-color: #f8f9fa;
+        border-top: 1px solid #ddd;
+    }
+    .keyword-btn.btn-sm {
+        transition: transform 0.2s, background-color 0.2s;
+    }
+    .keyword-btn.btn-sm:hover {
+        transform: scale(1.05);
+        background-color: #0056b3;
+    }
+</style>
+
+<script>
+    const chatbox = document.getElementById('chatbox');
+    const input = document.getElementById('input');
+    const sendBtn = document.getElementById('send-btn');
+    const apiUrl = '{{ path('chatbot') }}';
+
+    async function sendMessage(message) {
+        if (!message.trim()) return;
+
+        const userMessage = document.createElement('div');
+        userMessage.className = 'chat-message-user';
+        userMessage.innerHTML = `<b>Vous :</b> ${message}`;
+        chatbox.appendChild(userMessage);
+
+        try {
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                body: new URLSearchParams({ message })
+            });
+            if (!response.ok) throw new Error('Erreur réseau');
+            const data = await response.json();
+            const reply = data.reply || 'Désolé, je n’ai pas compris. Essayez "salut", "aide", "contact", "offres", "réservation", "prix", ou "événements" pour en savoir plus !';
+
+            const botMessage = document.createElement('div');
+            botMessage.className = 'chat-message-bot';
+            botMessage.innerHTML = `<b>Trripin :</b> ${reply}`;
+            chatbox.appendChild(botMessage);
+        } catch (error) {
+            const errorMessage = document.createElement('div');
+            errorMessage.className = 'error-message';
+            errorMessage.innerHTML = `<b>Trripin :</b> Erreur : ${error.message}`;
+            chatbox.appendChild(errorMessage);
+        }
+
+        chatbox.scrollTop = chatbox.scrollHeight;
+    }
+
+    function setupEventListeners() {
+        document.getElementById('keywords').addEventListener('click', (e) => {
+            if (e.target.classList.contains('keyword-btn')) {
+                const keyword = e.target.dataset.keyword;
+                sendMessage(keyword);
+            }
+        });
+
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage(input.value);
+                input.value = '';
+            }
+        });
+
+        sendBtn.addEventListener('click', () => {
+            sendMessage(input.value);
+            input.value = '';
+        });
+    }
+
+    setupEventListeners();
+</script>

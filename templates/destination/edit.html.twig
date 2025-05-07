@@ -1,0 +1,64 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Edit Destination{% endblock %}
+
+{% block body %}
+    <h1>Edit Destination</h1>
+
+    {{ form_start(form,{'attr':{'novalidate':'novalidate'}}) }}
+        <div class="mb-3">
+            {{ form_label(form.pays, 'Pays', { 'label_attr': {'class': 'form-label'} }) }}
+            {{ form_widget(form.pays, { 'attr': {'class': 'form-control'} }) }}
+            {% if form_errors(form.pays) %}
+                <div class="text-danger">
+                    {{ form_errors(form.pays) }}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.ville, 'Ville', { 'label_attr': {'class': 'form-label'} }) }}
+            {{ form_widget(form.ville, { 'attr': {'class': 'form-control'} }) }}
+            {% if form_errors(form.ville) %}
+                <div class="text-danger">
+                    {{ form_errors(form.ville) }}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.codePostal, 'Code Postal', { 'label_attr': {'class': 'form-label'} }) }}
+            {{ form_widget(form.codePostal, { 'attr': {'class': 'form-control'} }) }}
+            {% if form_errors(form.codePostal) %}
+                <div class="text-danger">
+                    {{ form_errors(form.codePostal) }}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.latitude, 'Latitude', { 'label_attr': {'class': 'form-label'} }) }}
+            {{ form_widget(form.latitude, { 'attr': {'class': 'form-control'} }) }}
+            {% if form_errors(form.latitude) %}
+                <div class="text-danger">
+                    {{ form_errors(form.latitude) }}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.longitude, 'Longitude', { 'label_attr': {'class': 'form-label'} }) }}
+            {{ form_widget(form.longitude, { 'attr': {'class': 'form-control'} }) }}
+            {% if form_errors(form.longitude) %}
+                <div class="text-danger">
+                    {{ form_errors(form.longitude) }}
+                </div>
+            {% endif %}
+        </div>
+
+        <button type="submit" class="btn btn-warning">Modifier</button>
+    {{ form_end(form) }}
+
+    <a href="{{ path('app_destination_index') }}">back to list</a>
+
+{% endblock %}

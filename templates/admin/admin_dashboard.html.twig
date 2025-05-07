@@ -1,0 +1,316 @@
+{# templates/admin_dashboard.html.twig #}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Basic -->
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <!-- Mobile Metas -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <!-- Site Metas -->
+  <meta name="keywords" content="Trip In Admin Dashboard" />
+  <meta name="description" content="Admin Dashboard for Trip In" />
+  <meta name="author" content="Trip In Team" />
+  <link rel="shortcut icon" href="{{ asset('images/fevicon.png') }}" type="image/png">
+
+  <title>{% block title %}Trip In - Admin Dashboard{% endblock %}</title>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" type="text/css" href="{{ asset('css/bootstrap.css') }}" />
+<!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Fonts style -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+  <!-- Owl slider stylesheet -->
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" />
+
+  <!-- Font Awesome style -->
+  <link href="{{ asset('css/font-awesome.min.css') }}" rel="stylesheet" />
+
+  <!-- Custom styles -->
+  <link href="{{ asset('css/style.css') }}" rel="stylesheet" />
+  <link href="{{ asset('css/responsive.css') }}" rel="stylesheet" />
+
+  <!-- Inline Admin Dashboard Styles -->
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #f4f6f9;
+      color: #333;
+    }
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 250px;
+      height: 100%;
+      background: #2c3e50;
+      color: white;
+      padding: 20px;
+      box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    }
+    .sidebar .brand {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .sidebar .nav-link {
+      color: #bdc3c7;
+      padding: 10px 15px;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+    .sidebar .nav-link:hover, .sidebar .nav-link.active {
+      background: #34495e;
+      color: white;
+    }
+    .topbar {
+      background: #ffffff;
+      padding: 15px 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      position: fixed;
+      top: 0;
+      left: 250px;
+      right: 0;
+      z-index: 1000;
+    }
+    .main-content {
+      margin-left: 250px;
+      padding: 80px 20px 20px;
+    }
+    .dashboard-card {
+      background: white;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      transition: transform 0.2s;
+    }
+    .dashboard-card:hover {
+      transform: translateY(-5px);
+    }
+    .dashboard-card h3 {
+      font-size: 1.25rem;
+      margin-bottom: 15px;
+      color: #2c3e50;
+    }
+    .btn-admin {
+      background: #3498db;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 5px;
+      color: white;
+      transition: background 0.3s;
+    }
+    .btn-admin:hover {
+      background: #2980b9;
+      color: white;
+    }
+  </style>
+</head>
+
+<body>
+  {% block content %}
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="brand">
+      <a href="{{ path('landing_index') }}" class="text-white text-decoration-none">Trip In Admin</a>
+    </div>
+    <ul class="nav flex-column">
+      <li class="nav-item">
+        <a class="nav-link active" href="{{ path('admin_dashboard') }}">
+          <i class="fa fa-tachometer me-2" aria-hidden="true"></i> Dashboard
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ path('admin_users') }}">
+          <i class="fa fa-users me-2" aria-hidden="true"></i> Users
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ path('app_publication_index') }}">
+          <i class="fa fa-list me-2" aria-hidden="true"></i> publications
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ path('app_activity_index') }}">
+          <i class="fa fa-list me-2" aria-hidden="true"></i> Activities
+        </a>
+      </li>
+       <li class="nav-item">
+        <a class="nav-link" href="{{ path('evenement_index') }}">
+          <i class="fa fa-list me-2" aria-hidden="true"></i> events
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">
+          <i class="fa fa-cogs me-2" aria-hidden="true"></i> Offers
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">
+          <i class="fa fa-envelope me-2" aria-hidden="true"></i> Contact Requests
+        </a>
+      </li>
+      <li class="nav-item">
+        <form method="post" action="{{ path('app_logout') }}">
+          <input type="hidden" name="_token" value="{{ csrf_token('logout') }}">
+          <button type="submit" class="nav-link btn btn-link p-0 text-start text-white" style="width: 100%;">
+            <i class="fa fa-sign-out me-2" aria-hidden="true"></i> Logout
+          </button>
+        </form>
+      </li>
+    </ul>
+  </div>
+<!-- Topbar -->
+<div class="topbar">
+  <div class="d-flex justify-content-between align-items-center">
+    <h4 class="mb-0">Admin Dashboard</h4>
+    <!-- Dropdown Button -->
+    <div class="dropdown">
+      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+        My Account
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        <li><a class="dropdown-item" href="/app_logout">Déconnexion</a></li>
+        <li><a class="dropdown-item" href="/profile">Voir votre profil</a></li>
+        <li><a class="dropdown-item" href="#">Autre option</a></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="container-fluid">
+      
+
+      <!-- Dashboard Welcome -->
+      <div class="row mb-4">
+        <div class="col-12">
+          <div class="dashboard-card">
+            <h3>Welcome to Trip In Admin</h3>
+            <p>Manage your travel services, publications, and client interactions efficiently from here.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Services Overview -->
+      <div class="row mb-4">
+        <div class="col-md-6 col-lg-3">
+          <div class="dashboard-card">
+            <h3>Destinations</h3>
+            <p>Manage travel destinations and their details.</p>
+            <a href="#" class="btn btn-admin">View All</a>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+          <div class="dashboard-card">
+            <h3>Transport</h3>
+            <p>Oversee transportation options and schedules.</p>
+            <a href="#" class="btn btn-admin">View All</a>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+          <div class="dashboard-card">
+            <h3>Accommodation</h3>
+            <p>Handle accommodation bookings and availability.</p>
+            <a href="#" class="btn btn-admin">View All</a>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+          <div class="dashboard-card">
+            <h3>Events</h3>
+            <p>Organize and monitor upcoming events.</p>
+            <a href="#" class="btn btn-admin">View All</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="row mb-4">
+        <div class="col-md-6">
+          <div class="dashboard-card">
+            <h3>Track Shipments</h3>
+            <form action="#" class="d-flex">
+              <input type="text" class="form-control me-2" placeholder="Enter Tracking Number" />
+              <button type="submit" class="btn btn-admin">Track</button>
+            </form>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="dashboard-card">
+            <h3>Quick Stats</h3>
+            <ul class="list-unstyled">
+              <li><i class="fa fa-users me-2" aria-hidden="true"></i> Clients: 150</li>
+              <li><i class="fa fa-file-text me-2" aria-hidden="true"></i> Publications: 45</li>
+              <li><i class="fa fa-truck me-2" aria-hidden="true"></i> Active Shipments: 12</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Client Feedback -->
+      <div class="row">
+        <div class="col-12">
+          <div class="dashboard-card">
+            <h3>Recent Client Feedback</h3>
+            <div class="owl-carousel">
+              <div class="item">
+                <p>"Great service, very reliable!"</p>
+                <small>- Adipiscing Magna</small>
+              </div>
+              <div class="item">
+                <p>"The best travel experience I've had."</p>
+                <small>- John Doe</small>
+              </div>
+              <div class="item">
+                <p>"Quick and efficient support."</p>
+                <small>- Jane Smith</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endblock %}
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script> <!-- jQuery (if needed) -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+<script type="text/javascript" src="{{ asset('js/custom.js') }}"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCh39n5U-4IoWpsVGUHWdqB6puEkhRLdmI&callback=myMap"></script>
+
+<!-- Correct Bootstrap Bundle Script (once) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-0evHe/X+R7Yk1vPUzjAmIIL2Nt+2xgkT0MEZb6YUX2zV4l9ENjT4HmGDaI93TVbd" crossorigin="anonymous"></script>
+
+<script>
+  $(document).ready(function() {
+    $('.owl-carousel').owlCarousel({
+      loop: true,
+      margin: 10,
+      nav: true,
+      items: 1,
+      autoplay: true,
+      autoplayTimeout: 3000
+    });
+  });
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var myDropdown = document.getElementById('dropdownMenuButton');
+    myDropdown.addEventListener('click', function (event) {
+      var dropdownMenu = document.querySelector('.dropdown-menu');
+      dropdownMenu.classList.toggle('show');
+    });
+  });
+</script>
+
+
+</body>
+</html>

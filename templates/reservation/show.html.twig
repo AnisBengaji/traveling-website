@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Détails Réservation - {{ reservation.evenement.nom }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-light">
+<div class="container py-5">
+    <div class="card border-0 shadow-lg">
+        <div class="card-header bg-primary text-white py-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2 class="h4 mb-0">
+                    <i class="fas fa-receipt me-2"></i>
+                    Réservation #{{ reservation.id }}
+                </h2>
+                <span class="badge bg-{{ reservation.status == 'confirmée' ? 'success' : 'warning' }} fs-6">
+                    {{ reservation.status|capitalize }}
+                </span>
+            </div>
+        </div>
+
+        <div class="card-body p-4">
+            <div class="row g-4">
+                <!-- Colonne Principale -->
+                <div class="col-lg-8">
+                    <div class="list-group">
+                        <!-- Bloc Prix -->
+                        <div class="list-group-item d-flex align-items-center py-3">
+                            <div class="bg-success text-white rounded-circle p-3 me-3">
+                                <i class="fas fa-coins fa-2x"></i>
+                            </div>
+                            <div>
+                                <h3 class="h5 mb-1 text-success">Total</h3>
+                                <p class="fs-4 fw-bold mb-0">{{ reservation.priceTotal }} DT</p>
+                            </div>
+                        </div>
+
+                        <!-- Bloc Paiement -->
+                        <div class="list-group-item d-flex align-items-center py-3">
+                            <div class="bg-info text-white rounded-circle p-3 me-3">
+                                <i class="fas fa-credit-card fa-2x"></i>
+                            </div>
+                            <div>
+                                <h3 class="h5 mb-1 text-info">Paiement</h3>
+                                <p class="fs-5 mb-0">{{ reservation.modePaiement|capitalize }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Colonne Latérale -->
+                <div class="col-lg-4">
+                    <!-- Carte Client -->
+                    <div class="card border-primary mb-4">
+                        <div class="card-header bg-light py-2">
+                            <h4 class="h6 mb-0"><i class="fas fa-user-tie me-2"></i>Client</h4>
+                        </div>
+                        <div class="card-body">
+                            <p class="mb-1 fw-medium">{{ reservation.user.prenom }} {{ reservation.user.nom }}</p>
+                            <hr class="my-2">
+                            <p class="text-muted small mb-0">
+                                <i class="fas fa-envelope me-2"></i>{{ reservation.user.email }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Carte Événement -->
+                    <div class="card border-success">
+                        <div class="card-header bg-light py-2">
+                            <h4 class="h6 mb-0"><i class="fas fa-calendar-star me-2"></i>Événement</h4>
+                        </div>
+                        <div class="card-body">
+                            <h3 class="h5 card-title mb-3">{{ reservation.evenement.nom }}</h3>
+                            
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="fas fa-map-marker-alt text-danger me-2"></i>
+                                <span class="text-muted">{{ reservation.evenement.lieu }}</span>
+                            </div>
+                            
+                         
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-footer bg-light py-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <a href="{{ path('reservation_index') }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Retour aux réservations
+                </a>
+                <span class="text-muted small">Numero : {{ reservation.id }}</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

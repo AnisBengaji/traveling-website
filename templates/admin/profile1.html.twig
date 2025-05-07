@@ -1,0 +1,106 @@
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Profil Utilisateur - Carint{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        .profile-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 15px;
+        }
+        .profile-card {
+            border-radius: 15px;
+            background: #fff;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .profile-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+        .profile-card .card-body {
+            padding: 30px;
+        }
+        .profile-card h5 {
+            color: #007bff;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        .profile-card p {
+            margin: 10px 0;
+            font-size: 1.1rem;
+            color: #333;
+        }
+        .profile-card p strong {
+            color: #495057;
+        }
+        .btn-primary, .btn-secondary {
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover, .btn-secondary:hover {
+            transform: scale(1.05);
+        }
+        @media (max-width: 576px) {
+            .profile-card .card-body {
+                padding: 20px;
+            }
+            .btn-primary, .btn-secondary {
+                width: 100%;
+                margin: 10px 0 !important;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="profile-container">
+        <h2 class="mb-4 text-center">Profil Utilisateur</h2>
+        <div class="card shadow profile-card">
+            <div class="card-body">
+                <h5 class="card-title">Informations Personnelles</h5>
+                <p><strong>Nom :</strong> {{ user.nom|default('N/A') }}</p>
+                <p><strong>Prénom :</strong> {{ user.prenom|default('N/A') }}</p>
+                <p><strong>Email :</strong> {{ user.email|default('N/A') }}</p>
+                <p><strong>Rôle :</strong> {{ user.roles[0]|default('N/A') }}</p>
+                <a href="{{ path('profile_edit3') }}" class="btn btn-primary mt-3">
+                    <i class="fas fa-edit me-1"></i> Modifier le profil
+                </a>
+                <a href="{{ path('profile_change_password3') }}" class="btn btn-secondary mt-3 ms-3">
+                    <i class="fas fa-key me-1"></i> Modifier le mot de passe
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        $(document).ready(function() {
+            // Button click animation
+            $('.btn-primary, .btn-secondary').on('click', function(e) {
+                $(this).css('transform', 'scale(0.95)');
+                setTimeout(() => {
+                    $(this).css('transform', 'scale(1)');
+                }, 100);
+            });
+
+            // Confirmation dialog for profile edit/password change
+            $('a[href="{{ path('profile_edit3') }}"]').on('click', function(e) {
+                if (!confirm('Voulez-vous modifier votre profil ?')) {
+                    e.preventDefault();
+                }
+            });
+
+            $('a[href="{{ path('profile_change_password3') }}"]').on('click', function(e) {
+                if (!confirm('Voulez-vous modifier votre mot de passe ?')) {
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
+{% endblock %}

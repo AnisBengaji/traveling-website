@@ -1,0 +1,105 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}New Activity{% endblock %}
+
+{% block body %}
+    <h1>Create new Activity</h1>
+
+    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+    <div class="mb-3">
+        {{ form_label(form.nomActivity, 'Activity Name', { 'label_attr': {'class': 'form-label'} }) }}
+        {{ form_widget(form.nomActivity, { 'attr': {'class': 'form-control'} }) }}
+        {% if form_errors(form.nomActivity) %}
+            <div class="text-danger">
+                {{ form_errors(form.nomActivity) }}
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.imageActivity, 'Primary Image', { 'label_attr': {'class': 'form-label'} }) }}
+        {{ form_widget(form.imageActivity, { 'attr': {'class': 'form-control'} }) }}
+        {% if form_errors(form.imageActivity) %}
+            <div class="text-danger">
+                {{ form_errors(form.imageActivity) }}
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.imageActivity2, 'Secondary Image', { 'label_attr': {'class': 'form-label'} }) }}
+        {{ form_widget(form.imageActivity2, { 'attr': {'class': 'form-control'} }) }}
+        {% if form_errors(form.imageActivity2) %}
+            <div class="text-danger">
+                {{ form_errors(form.imageActivity2) }}
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.imageActivity3, 'Tertiary Image', { 'label_attr': {'class': 'form-label'} }) }}
+        {{ form_widget(form.imageActivity3, { 'attr': {'class': 'form-control'} }) }}
+        {% if form_errors(form.imageActivity3) %}
+            <div class="text-danger">
+                {{ form_errors(form.imageActivity3) }}
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.type, 'Type', { 'label_attr': {'class': 'form-label'} }) }}
+        {{ form_widget(form.type, { 'attr': {'class': 'form-control'} }) }}
+        {% if form_errors(form.type) %}
+            <div class="text-danger">
+                {{ form_errors(form.type) }}
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.description, 'Description', { 'label_attr': {'class': 'form-label'} }) }}
+        {{ form_widget(form.description, { 'attr': {'class': 'form-control'} }) }}
+        {% if form_errors(form.description) %}
+            <div class="text-danger">
+                {{ form_errors(form.description) }}
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.activityPrice, 'Price', { 'label_attr': {'class': 'form-label'} }) }}
+        {{ form_widget(form.activityPrice, { 'attr': {'class': 'form-control'} }) }}
+        {% if form_errors(form.activityPrice) %}
+            <div class="text-danger">
+                {{ form_errors(form.activityPrice) }}
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.dateActivite, 'Date', { 'label_attr': {'class': 'form-label'} }) }}
+        {{ form_widget(form.dateActivite, { 'attr': {'class': 'form-control'} }) }}
+        {% if form_errors(form.dateActivite) %}
+            <div class="text-danger">
+                {{ form_errors(form.dateActivite) }}
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.iddestination, 'Destination', { 'label_attr': {'class': 'form-label'} }) }}
+        {{ form_widget(form.iddestination, { 'attr': {'class': 'form-control'} }) }}
+        {% if form_errors(form.iddestination) %}
+            <div class="text-danger">
+                {{ form_errors(form.iddestination) }}
+            </div>
+        {% endif %}
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create Activity</button>
+
+    {{ form_end(form) }}
+
+    <a href="{{ path('app_activity_index') }}">back to list</a>
+{% endblock %}

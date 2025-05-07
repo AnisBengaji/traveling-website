@@ -1,0 +1,218 @@
+{% form_theme form _self %}
+
+<style>
+    .publication-form {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 24px;
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+        font-family: 'Inter', sans-serif;
+    }
+
+    .publication-form .form-group {
+        margin-bottom: 28px;
+    }
+
+    .publication-form label {
+        font-weight: 600;
+        color: #1a202c;
+        font-size: 15px;
+        margin-bottom: 10px;
+        display: block;
+    }
+
+    .publication-form .form-control {
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 14px 16px;
+        font-size: 15px;
+        color: #2d3748;
+        background: #f7fafc;
+        transition: all 0.3s ease;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .publication-form .form-control:focus {
+        border-color: #4299e1;
+        box-shadow: 0 0 0 4px rgba(66, 153, 225, 0.15);
+        background: #ffffff;
+        outline: none;
+    }
+
+    .publication-form .form-control::placeholder {
+        color: #a0aec0;
+        font-style: italic;
+    }
+
+    .publication-form select.form-control {
+        appearance: none;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233b4a5e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 16px center;
+        background-size: 20px;
+        padding-right: 48px;
+        color: #2d3748;
+        height: 48px;
+        line-height: 1.5;
+    }
+
+    .publication-form select.form-control option {
+        color: #2d3748;
+        background: #ffffff;
+        font-size: 15px;
+    }
+
+    .publication-form select.form-control:invalid {
+        color: #a0aec0;
+    }
+
+    .publication-form textarea.form-control {
+        resize: vertical;
+        min-height: 140px;
+        max-height: 400px;
+        border-radius: 12px;
+    }
+
+    .publication-form .form-control-file {
+        border: 1px dashed #cbd5e0;
+        border-radius: 8px;
+        padding: 12px;
+        background: #edf2f7;
+        font-size: 14px;
+        color: #4a5568;
+        width: 100%;
+        transition: border-color 0.3s ease;
+    }
+
+    .publication-form .form-control-file:hover {
+        border-color: #a0aec0;
+    }
+
+    .publication-form .form-control-file:focus {
+        border-color: #4299e1;
+        outline: none;
+    }
+
+    .publication-form .btn-primary {
+        background: linear-gradient(135deg, #4299e1 0%, #2b6cb0 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 14px 28px;
+        font-size: 15px;
+        font-weight: 600;
+        color: #ffffff;
+        transition: all 0.3s ease;
+        width: 100%;
+        margin-top: 24px;
+    }
+
+    .publication-form .btn-primary:hover {
+        background: linear-gradient(135deg, #5aabe6 0%, #2c5282 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(66, 153, 225, 0.3);
+    }
+
+    .publication-form .btn-primary:active {
+        transform: translateY(0);
+        box-shadow: none;
+    }
+
+    .publication-form .form-error-message,
+    .publication-form .is-invalid .form-control,
+    .publication-form .is-invalid .invalid-feedback {
+        all: unset;
+    }
+
+    .publication-form .alert {
+        margin-bottom: 20px;
+    }
+
+    @media (max-width: 768px) {
+        .publication-form {
+            padding: 20px;
+        }
+
+        .publication-form .form-control,
+        .publication-form select.form-control {
+            font-size: 14px;
+            padding: 12px 14px;
+            height: 44px;
+        }
+
+        .publication-form .btn-primary {
+            padding: 12px 24px;
+            font-size: 14px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .publication-form {
+            padding: 16px;
+        }
+    }
+</style>
+
+<div class="publication-form">
+    {% if form.vars.errors|length > 0 %}
+        <div class="alert alert-danger">
+            Please correct the errors below:
+            <ul>
+                {% for error in form.vars.errors %}
+                    <li>{{ error.message }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate', 'id': 'publication-form'}}) }}
+        <div class="row">
+            <div class="col-md-6 form-group">
+                {{ form_label(form.title, 'Title') }}
+                {{ form_widget(form.title, {'attr': {'class': 'form-control rounded-pill'}}) }}
+                {{ form_errors(form.title) }}
+            </div>
+            <div class="col-md-6 form-group">
+                {{ form_label(form.visibility, 'Visibility') }}
+                {{ form_widget(form.visibility, {'attr': {'class': 'form-control rounded-pill'}}) }}
+                {{ form_errors(form.visibility) }}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 form-group">
+                {{ form_label(form.category, 'Category') }}
+                {{ form_widget(form.category, {'attr': {'class': 'form-control rounded-pill'}}) }}
+                {{ form_errors(form.category) }}
+            </div>
+            <div class="col-md-6 form-group">
+                {{ form_label(form.imageSource, 'Image Source') }}
+                {{ form_widget(form.imageSource, {'attr': {'class': 'form-control rounded-pill'}}) }}
+                {{ form_errors(form.imageSource) }}
+            </div>
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.contenu, 'Content') }}
+            {{ form_widget(form.contenu, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.contenu) }}
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 form-group">
+                {{ form_label(form.imageFile, 'Image File (PNG, JPEG)') }}
+                {{ form_widget(form.imageFile, {'attr': {'class': 'form-control-file'}}) }}
+                {{ form_errors(form.imageFile) }}
+            </div>
+            <div class="col-md-6 form-group">
+                {{ form_label(form.imageUrl, 'Image URL') }}
+                {{ form_widget(form.imageUrl, {'attr': {'class': 'form-control rounded-pill'}}) }}
+                {{ form_errors(form.imageUrl) }}
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">{{ button_label|default('Save') }}</button>
+    {{ form_end(form) }}
+</div>

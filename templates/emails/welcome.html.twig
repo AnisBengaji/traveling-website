@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome to Trip In</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            color: #2c3e50;
+            font-size: 24px;
+            margin: 0;
+        }
+        .content {
+            line-height: 1.6;
+        }
+        .content p {
+            margin: 0 0 15px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 500;
+        }
+        .btn:hover {
+            background: #2980b9;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #6c757d;
+            font-size: 14px;
+        }
+        .footer a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Welcome to Trip In!</h1>
+        </div>
+        <div class="content">
+            <p>Dear {{ user.nom|default('User') }} {{ user.prenom|default('') }},</p>
+            <p>Welcome to Trip In! We're excited to have you join our travel community.</p>
+            <p>Start exploring destinations and booking trips by logging in to your account.</p>
+            <p style="text-align: center;">
+                <a href="{{ absolute_url(path('app_login')) }}" class="btn">Log In Now</a>
+            </p>
+            <p>For any questions, contact us at <a href="mailto:support@tripin.com">support@tripin.com</a>.</p>
+        </div>
+        <div class="footer">
+            <p>© {{ "now"|date("Y") }} Trip In. All rights reserved.</p>
+            <p><a href="{{ absolute_url(path('landing_index')) }}">Visit Trip In</a></p>
+        </div>
+    </div>
+</body>
+</html>

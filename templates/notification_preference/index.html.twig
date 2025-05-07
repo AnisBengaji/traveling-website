@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Préférences de notification{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>Préférences de notification</h1>
+
+        {{ form_start(form) }}
+            <div class="card">
+                <div class="card-body">
+                    {{ form_row(form.emailEnabled) }}
+                    {{ form_row(form.smsEnabled) }}
+                    {{ form_row(form.phoneNumber) }}
+                </div>
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-primary">Enregistrer les préférences</button>
+                </div>
+            </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %} 

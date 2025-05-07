@@ -1,0 +1,10 @@
+{# templates/publication/error.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Error{% endblock %}
+
+{% block body %}
+    <h1>Error</h1>
+    <p>{{ error }}</p>
+    <a href="{{ path('app_publication_index') }}">Back to Publications</a>
+{% endblock %}

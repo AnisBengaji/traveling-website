@@ -1,0 +1,43 @@
+{# templates/activity/calendar.html.twig #}
+{% extends 'base2.html.twig' %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  <link
+    href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/main.min.css"
+    rel="stylesheet"
+  />
+{% endblock %}
+
+{% block content %}
+  <div class="container mt-4">
+    <h1>Calendrier des activités</h1>
+    <div id="calendar-holder" style="max-width:900px; margin:auto;"></div>
+  </div>
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var calendarEl = document.getElementById('calendar-holder');
+      var calendar   = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        headerToolbar: {
+          left: 'prev,next today',
+          center: 'title',
+          right: 'dayGridMonth,timeGridWeek,timeGridDay'
+        },
+        events: '{{ path("app_activity_events") }}',
+        eventClick: function(info) {
+          if (info.event.url) {
+            info.jsEvent.preventDefault();
+            window.location.href = info.event.url;
+          }
+        }
+      });
+      calendar.render();
+    });
+  </script>
+{% endblock %}

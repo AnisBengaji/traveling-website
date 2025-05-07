@@ -1,0 +1,75 @@
+{% extends 'base2.html.twig' %}
+
+{% block title %}Détails de l'activité{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+  <div class="card shadow-lg">
+    <div class="row no-gutters">
+      <div class="col-md-6">
+        {# Carousel for images #}
+        <div id="activityCarousel{{ activity.idActivity }}" class="carousel slide h-100" data-ride="carousel">
+          <div class="carousel-inner h-100">
+            {% set images = [activity.imageActivity, activity.imageActivity2, activity.imageActivity3] %}
+            {% set validImages = [] %}
+            {% for img in images %}
+              {% if img %}
+                {% set validImages = validImages|merge([img]) %}
+              {% endif %}
+            {% endfor %}
+            {% if validImages|length > 0 %}
+              {% for img in validImages %}
+                <div class="carousel-item h-100{% if loop.first %} active{% endif %}">
+                  <img src="{{ asset('Uploads/' ~ img) }}" class="d-block w-100 h-100" alt="Image {{ loop.index }}" style="object-fit: cover;">
+                </div>
+              {% endfor %}
+            {% else %}
+              <div class="carousel-item active h-100">
+                <div class="d-flex align-items-center justify-content-center h-100 bg-light">
+                  <span class="text-muted">Pas d'image disponible</span>
+                </div>
+              </div>
+            {% endif %}
+          </div>
+          <a class="carousel-control-prev" href="#activityCarousel{{ activity.idActivity }}" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Précédent</span>
+          </a>
+          <a class="carousel-control-next" href="#activityCarousel{{ activity.idActivity }}" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Suivant</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="card-body d-flex flex-column">
+          <h3 class="card-title mb-3">{{ activity.nomActivity }}</h3>
+          <p class="card-text mb-4">{{ activity.description }}</p>
+          <ul class="list-group list-group-flush mb-4">
+            <li class="list-group-item"><strong>Type :</strong> {{ activity.type }}</li>
+            <li class="list-group-item"><strong>Prix :</strong> {{ activity.activityPrice }} DT</li>
+            <li class="list-group-item"><strong>Date :</strong> {{ activity.dateActivite ? activity.dateActivite|date('d/m/Y') : 'N/A' }}</li>
+            <li class="list-group-item"><strong>Destination :</strong> {{ activity.iddestination ? activity.iddestination.ville ~ ', ' ~ activity.iddestination.pays : 'N/A' }}</li>
+          </ul>
+
+          {# QR Code Section #}
+          <div class="mt-3">
+            <h5>QR Code de l'activité :</h5>
+            <div>
+              {# Embed the QR code SVG directly in the HTML #}
+              <div>{{ qrCodeSvg|raw }}</div>  <!-- Render the SVG QR Code directly -->
+            </div>
+          </div>
+
+          <div class="mt-auto">
+            <a href="{{ path('app_activity_index2', {'idDestination': activity.iddestination.idDestination}) }}" class="btn btn-outline-secondary mr-2">
+              Retour à la liste
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

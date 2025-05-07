@@ -1,0 +1,104 @@
+# config/services.yaml
+
+parameters:
+    login.max_attempts: 3
+    login.ban_duration: 60 # 1 minute in seconds
+    publication_images_directory: '%kernel.project_dir%/public/uploads/publications'
+    images_directory: '%kernel.project_dir%/public/uploads/images'
+    uploads_directory: '%kernel.project_dir%/public/uploads'
+    audio_directory: '%kernel.project_dir%/public/uploads/audio'
+    app.youtube.api_key: 'AIzaSyDHBt-VavZ1WEgopaU9xFkTdBH_6V04zO0'
+    weather_api_key: '%env(WEATHER_API_KEY)%'
+
+
+
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        bind:
+            string $pixabayKey: '%env(PIXABAY_API_KEY)%'
+            string $weatherApiKey: '%weather_api_key%'
+         
+            
+    # Auto-registration of all classes
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'
+            - '../src/Security/' # only needed if you don't want services auto-loaded from here
+
+    # Password hasher service alias
+    Symfony\Component\Security\Core\PasswordHasher\UserPasswordHasherInterface:
+        alias: 'security.password_hasher'
+
+    # Register login success handler
+    App\Controller\Security\CustomLoginSuccessHandler:
+        arguments:
+            $router: '@router.default'
+
+    App\Controller\Security\AccessDeniedHandler: ~
+
+    # Custom Reset Password Service
+    App\Service\CustomResetPasswordService:
+        arguments:
+            $session: '@session.storage.factory.native'
+            $passwordHasher: '@security.password_hasher'
+            $resetPasswordHelper: '@symfonycasts.reset_password.helper'
+            $entityManager: '@doctrine.orm.entity_manager'
+
+    # Explicit service definitions
+    App\Service\SessionBanManager:
+        arguments:
+            $requestStack: '@request_stack'
+            $maxAttempts: '%login.max_attempts%'
+            $banDuration: '%login.ban_duration%'
+
+    App\Security\LoginFormAuthenticator:
+        arguments:
+            $banManager: '@App\Service\SessionBanManager'
+            $urlGenerator: '@router.default'
+        tags: ['security.authenticator.custom']
+
+    App\EventListener\LoginFailureListener:
+        tags:
+            - { name: kernel.event_subscriber }
+
+    # SMS Service interface for test mode
+    App\Service\SmsServiceInterface:
+        alias: App\Service\MockSmsService
+
+    # Real SMS service using Twilio
+    App\Service\SmsService:
+        arguments:
+            $twilioSid: '%env(TWILIO_SID)%'
+            $twilioToken: '%env(TWILIO_AUTH_TOKEN)%'
+            $fromNumber: '%env(TWILIO_FROM_NUMBER)%'
+            $logger: '@logger'
+
+    # Bad word filtering service
+    App\Service\BadWordFilterService:
+        arguments:
+            $httpClient: '@http_client'
+            $logger: '@logger'
+            $apiKey: '%env(BAD_WORDS_API_KEY)%'
+            $apiUrl: 'https://api.apilayer.com/bad_words'
+
+    # Translation service (MyMemory)
+    App\Service\MyMemoryTranslationService:
+        arguments:
+            $httpClient: '@Symfony\Contracts\HttpClient\HttpClientInterface'
+            $logger: '@logger'
+
+    # YouTube API service
+    App\Service\GoogleYouTubeService:
+        arguments:
+            $apiKey: '%app.youtube.api_key%'
+
+
+
+
+            

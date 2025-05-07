@@ -1,0 +1,67 @@
+{% extends 'admin/admin_dashboard.html.twig' %}
+
+{% block title %}Comment Details{% endblock %}
+
+{% block content %}
+    <div class="main-content">
+        <div class="container-fluid">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="dashboard-card">
+                        <h3>Comment Details</h3>
+                        
+                        <div class="table-responsive mt-4">
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th class="w-25" style="background-color: #f8f9fa;">ID</th>
+                                        <td>{{ comment.idComment }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th style="background-color: #f8f9fa;">Content</th>
+                                        <td>{{ comment.content }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th style="background-color: #f8f9fa;">Author</th>
+                                        <td>{{ comment.author.nom|default(comment.author.email) }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th style="background-color: #f8f9fa;">Date</th>
+                                        <td>{{ comment.dateComment ? comment.dateComment|date('Y-m-d H:i:s') : '' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th style="background-color: #f8f9fa;">Publication</th>
+                                        <td>
+                                            {% if comment.publication %}
+                                                <a href="{{ path('app_publication_show', {'id': comment.publication.idPublication}) }}">
+                                                    {{ comment.publication.title }}
+                                                </a>
+                                            {% else %}
+                                                No publication
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="mt-4 d-flex justify-content-between">
+                            <a href="{{ path('app_comment_index') }}" class="btn text-white px-4" style="background-color: #3a6ea5;">
+                                <i class="fa fa-arrow-left me-1"></i> Back to list
+                            </a>
+                            <div>
+                                {% if is_granted('ROLE_ADMIN') or comment.author == app.user %}
+                                    <a href="{{ path('app_comment_edit', {'id': comment.idComment}) }}" class="btn text-white px-4" style="background-color: #FBBC05;">
+
+                                        <i class="fa fa-edit me-1"></i> Edit
+                                    </a>
+                                    {{ include('comment/_delete_form.html.twig') }}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

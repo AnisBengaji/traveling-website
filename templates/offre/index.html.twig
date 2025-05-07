@@ -1,0 +1,80 @@
+{# templates/offre/index.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des offres{% endblock %}
+
+{% block body %}
+
+    <div class="container mt-4">
+        <h1>Liste des offres</h1>
+
+        {# Messages flash #}
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger">{{ message }}</div>
+        {% endfor %}
+
+        <div class="mb-4">
+            <a href="{{ path('app_offre_new') }}" class="btn btn-primary">Créer une nouvelle offre</a>
+            <a href="{{ path('app_offre_export_pdf') }}" class="btn btn-success" target="_blank">
+                <i class="fas fa-file-pdf"></i> Télécharger en PDF
+            </a>
+        </div>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Titre</th>
+                    <th>Description</th>
+                    <th>Prix</th>
+                    <th>Destination</th>
+                    <th>Image</th>
+                    <th>Tutoriel</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for offre in offres %}
+                    <tr>
+                        <td>{{ offre.id }}</td>
+                        <td>{{ offre.titre }}</td>
+                        <td>{{ offre.description }}</td>
+                        <td>{{ offre.prix }}</td>
+                        <td>{{ offre.destination }}</td>
+                        <td>
+                            {% if offre.image %}
+                                <img src="{{ asset('uploads/images/' ~ offre.image) }}" alt="Image de l'offre" class="img-thumbnail" style="max-width: 100px;">
+                            {% else %}
+                                Aucune image
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if offre.tutorials|length > 0 %}
+                                {% for tutorial in offre.tutorials %}
+                                    {{ tutorial.nomTutorial }}
+                                {% endfor %}
+                            {% else %}
+                                Aucun tutoriel
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ path('app_offre_show', {'id': offre.id}) }}" class="btn btn-info btn-sm">Voir</a>
+                            <a href="{{ path('app_offre_edit', {'id': offre.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
+                            <form method="post" action="{{ path('app_offre_delete', {'id': offre.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette offre ?');" style="display: inline-block;">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ offre.id) }}">
+                                <button class="btn btn-danger btn-sm">Supprimer</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="7">Aucune offre trouvée</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

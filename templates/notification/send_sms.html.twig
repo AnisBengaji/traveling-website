@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Send SMS</title>
+</head>
+<body>
+    <h1>Send SMS Notification</h1>
+    <form method="POST" action="{{ path('send_sms') }}">
+        <label>Phone Number (E.164 format, e.g., +21656078498):</label><br>
+        <input type="text" name="phone" required><br>
+        <label>Message:</label><br>
+        <textarea name="message" required>Hello from Symfony!</textarea><br>
+        <button type="submit">Send SMS</button>
+    </form>
+</body>
+</html>

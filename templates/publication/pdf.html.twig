@@ -1,0 +1,41 @@
+{# templates/admin/publication/pdf.html.twig #}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Publications PDF</title>
+</head>
+<body>
+    <h1>Publications List</h1>
+    <table border="1" cellpadding="5">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Content</th>
+                <th>Date</th>
+                <th>Author</th>
+                <th>Visibility</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for publication in publications %}
+                <tr>
+                    <td>{{ publication.idPublication }}</td>
+                    <td>{{ publication.title }}</td>
+                    <td>{{ publication.contenu|slice(0, 50) }}...</td>
+                    <td>{{ publication.datePublication ? publication.datePublication|date('Y-m-d') : '' }}</td>
+                    <td>{{ publication.author.nom|default(publication.author.email) }}</td>
+                    <td>{{ publication.visibility }}</td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="6">No publications found</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

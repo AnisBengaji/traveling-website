@@ -1,0 +1,23 @@
+{{ form_start(form) }}
+    {{ form_row(form.titre, {
+        'label': 'Titre',
+        'attr': {'class': 'form-control', 'placeholder': 'Entrez le titre de l\'offre'}
+    }) }}
+
+    {{ form_row(form.description, {
+        'label': 'Description',
+        'attr': {'class': 'form-control', 'placeholder': 'Entrez la description de l\'offre'}
+    }) }}
+
+    {{ form_row(form.prix, {
+        'label': 'Prix',
+        'attr': {'class': 'form-control', 'placeholder': 'Entrez le prix de l\'offre'}
+    }) }}
+
+    {{ form_row(form.destination, {
+        'label': 'Destination',
+        'attr': {'class': 'form-control', 'placeholder': 'Entrez la destination de l\'offre'}
+    }) }}
+
+    <button class="btn btn-primary mt-3">{{ button_label|default('Enregistrer') }}</button>
+{{ form_end(form) }} 

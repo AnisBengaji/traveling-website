@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trip In - Login</title>
+    <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <link href="{{ asset('css/font-awesome.min.css') }}" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f6f9;
+        }
+        .login-container {
+            max-width: 400px;
+            margin: 100px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .alert-danger {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            font-size: 1.1em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .ban-message {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        #countdown {
+            font-weight: bold;
+            color: #dc3545;
+            font-size: 1.2em;
+            background-color: rgba(255,255,255,0.3);
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+        .attempts-warning {
+            color: #856404;
+            background-color: #fff3cd;
+            border-color: #ffeeba;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+        input:disabled, button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transition: opacity 0.5s ease;
+        }
+        input:not(:disabled) {
+            opacity: 1;
+            background-color: #fff;
+            animation: enable 0.5s ease;
+        }
+        .alert-success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+            transition: all 0.5s ease;
+        }
+        @keyframes flash {
+            0% { background-color: #f8d7da; }
+            50% { background-color: #f5c6cb; }
+            100% { background-color: #f8d7da; }
+        }
+        @keyframes enable {
+            0% { background-color: #f8f9fa; }
+            50% { background-color: #e8f4ff; }
+            100% { background-color: #fff; }
+        }
+    </style>
+</head>
+<body>
+<div class="login-container">
+    <h2 class="text-center mb-4">Login to Trip In</h2>
+
+    {% if is_banned %}
+        <div class="alert alert-danger" style="animation: flash 1s infinite;">
+            <i class="fa fa-lock"></i> 
+            <strong>ACCOUNT LOCKED!</strong> Time remaining: 
+            <span id="countdown">{{ (ban_time_left // 60) }}m {{ (ban_time_left % 60) }}s</span>
+        </div>
+    {% elseif error %}
+        <div class="alert alert-danger">
+            <i class="fa fa-exclamation-triangle"></i> 
+            {{ error.messageKey|trans(error.messageData, 'security') }}
+        </div>
+
+        {% if remaining_attempts is defined and remaining_attempts < 3 %}
+            <div class="attempts-warning">
+                <i class="fa fa-exclamation-circle"></i>
+                Warning: {{ remaining_attempts }} attempt(s) remaining before account lock
+            </div>
+        {% endif %}
+    {% endif %}
+
+    <form method="post" action="{{ path('app_login') }}">
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+        <div class="form-group mb-3">
+            <label for="inputEmail" class="form-label">Email</label>
+            <input type="email" 
+                   value="{{ last_username }}" 
+                   name="email" 
+                   id="inputEmail"
+                   class="form-control" 
+                   placeholder="Enter your email" 
+                   required 
+                   autofocus
+                   {% if is_banned %}disabled{% endif %}>
+        </div>
+
+        <div class="form-group mb-4">
+            <label for="inputPassword" class="form-label">Password</label>
+            <input type="password" 
+                   name="password" 
+                   id="inputPassword"
+                   class="form-control" 
+                   placeholder="Enter your password" 
+                   required
+                   {% if is_banned %}disabled{% endif %}>
+        </div>
+
+        <div class="d-grid gap-2">
+            <button class="btn btn-primary" type="submit" id="login-button" {% if is_banned %}disabled{% endif %}>
+                {% if is_banned %}
+                    <i class="fa fa-lock"></i> Account Locked
+                {% else %}
+                    <i class="fa fa-sign-in"></i> Sign In
+                {% endif %}
+            </button>
+        </div>
+    </form>
+
+    <div class="text-center mt-3">
+        <a href="{{ path('app_register') }}" class="text-decoration-none">Create an account</a> | 
+        <a href="{{ path('app_forgot_password') }}" class="text-decoration-none">Forgot password?</a>
+    </div>
+</div>
+
+<script src="{{ asset('js/jquery.min.js') }}"></script>
+<script>
+$(document).ready(function() {
+    {% if is_banned %}
+        // Initialize with server-side ban time
+        let secondsLeft = {{ ban_time_left }};
+        const countdownElement = $('#countdown');
+        const emailInput = $('#inputEmail');
+        const passwordInput = $('#inputPassword');
+        const loginButton = $('#login-button');
+        const banAlert = $('.alert-danger');
+
+        // Function to update display
+        function updateDisplay() {
+            const minutes = Math.floor(secondsLeft / 60);
+            const seconds = secondsLeft % 60;
+            countdownElement.text(minutes + "m " + seconds + "s");
+        }
+
+        // Start countdown timer
+        updateDisplay(); // Initial display
+        const timer = setInterval(function() {
+            secondsLeft--;
+            updateDisplay();
+            
+            if (secondsLeft <= 0) {
+                clearInterval(timer);
+                // Enable form elements
+                emailInput.prop('disabled', false);
+                passwordInput.prop('disabled', false);
+                loginButton.prop('disabled', false)
+                    .html('<i class="fa fa-sign-in"></i> Sign In');
+                
+                // Update alert message
+                banAlert.removeClass('alert-danger')
+                         .addClass('alert-success')
+                         .html('<i class="fa fa-check-circle"></i> You can now login');
+                
+                // Focus on password field
+                passwordInput.focus();
+            }
+        }, 1000);
+
+        // Verify with server periodically
+        function checkBanStatus() {
+            $.get('{{ path('app_check_ban_status') }}', {email: '{{ last_username }}'}, function(response) {
+                if (!response.isBanned && secondsLeft > 0) {
+                    // If ban was lifted early
+                    secondsLeft = 0;
+                    updateDisplay();
+                    clearInterval(timer);
+                    
+                    // Enable form immediately
+                    emailInput.prop('disabled', false);
+                    passwordInput.prop('disabled', false);
+                    loginButton.prop('disabled', false)
+                        .html('<i class="fa fa-sign-in"></i> Sign In');
+                    
+                    banAlert.removeClass('alert-danger')
+                             .addClass('alert-success')
+                             .html('<i class="fa fa-check-circle"></i> You can now login');
+                    
+                    passwordInput.focus();
+                }
+            });
+        }
+        
+        // Check every 10 seconds
+        setInterval(checkBanStatus, 10000);
+    {% endif %}
+});
+</script>
+</body>
+</html>

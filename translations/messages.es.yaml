@@ -1,0 +1,54 @@
+service.title: Carint - Comunidad de Servicios
+post.search: Buscar publicaciones...
+language.select: Seleccionar idioma
+language.en: Inglés
+language.fr: Francés
+language.es: Español
+post.share: Comparte tus pensamientos...
+post.create: Crear una Publicación
+post.title: Título
+post.title.placeholder: Título de la publicación
+post.category: Categoría
+post.content: Contenido
+post.content.placeholder: ¿Qué tienes en mente?
+post.image: Imagen (opcional)
+post.submit: Publicar
+post.recent: Publicaciones Recientes
+user.current: Usuario Actual
+user.not_logged_in: No conectado
+filter.explore: Explorar Discusiones
+filter.all: Todos
+user.anonymous: Anónimo
+post.edit: Editar
+post.like: Me gusta
+post.dislike: No me gusta
+post.comment: Comentar
+post.none: No hay publicaciones disponibles en este momento.
+post.search_none: No se encontraron publicaciones para tu búsqueda.
+comment.none: No hay comentarios aún.
+comment.login_required: Por favor, inicia sesión para comentar.
+comment.add: Añadir un comentario...
+comment.submit: Publicar
+comment.not_loaded: Comentarios no cargados para los resultados de búsqueda.
+post.publication: Publicación
+post.liked: ¡Me gusta!
+post.like_removed: ¡Me gusta eliminado!
+post.disliked: ¡No me gusta!
+post.dislike_removed: ¡No me gusta eliminado!
+post.link_copied: ¡Enlace copiado!
+post.copy_link: Copiar este enlace
+post.published: ¡Publicación Publicada!
+post.published_message: Tu publicación ahora está en vivo.
+comment.posted: ¡Comentario Publicado!
+error.title: Error
+error.like_failed: No se pudo actualizar el estado de me gusta. Por favor, intenta de nuevo.
+error.dislike_failed: No se pudo actualizar el estado de no me gusta. Por favor, intenta de nuevo.
+error.search_failed: No se pudieron buscar publicaciones.
+error.form_incomplete: Formulario Incompleto
+error.form_required: Por favor, completa todos los campos requeridos.
+error.comment_required: Por favor, introduce un comentario.
+error.invalid_response: El servidor devolvió datos incompletos. Por favor, intenta de nuevo.
+error.invalid_response_title: Respuesta Inválida
+error.unexpected: Ocurrió un error inesperado. Por favor, intenta de nuevo.
+error.post_failed: No se pudo publicar la publicación. Por favor, intenta de nuevo.
+error.comment_failed: No se pudo publicar el comentario.

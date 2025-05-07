@@ -1,0 +1,123 @@
+{% extends 'admin/offre.html.twig' %}
+
+{% block title %}Modifier une offre{% endblock %}
+
+{% block page_title %}Modifier une offre{% endblock %}
+
+{% block form %}
+    <div class="container mt-5">
+        <h1 class="mb-4">Modifier une offre</h1>
+
+        {# Messages flash #}
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success" role="alert">{{ message }}</div>
+        {% endfor %}
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger" role="alert">{{ message }}</div>
+        {% endfor %}
+
+        {# Formulaire avec gestion des erreurs #}
+        {{ form_start(form, {'attr': {'class': 'form'}}) }}
+            <div class="mb-3">
+                {{ form_row(form.titre, {
+                    'label': 'Titre',
+                    'label_attr': {'class': 'form-label'},
+                    'attr': {'class': 'form-control'}
+                }) }}
+                {{ form_errors(form.titre) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_row(form.description, {
+                    'label': 'Description',
+                    'label_attr': {'class': 'form-label'},
+                    'attr': {'class': 'form-control', 'rows': 5}
+                }) }}
+                {{ form_errors(form.description) }}
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        {{ form_row(form.prix, {
+                            'label': 'Prix',
+                            'label_attr': {'class': 'form-label'},
+                            'attr': {'class': 'form-control'},
+                            'row_attr': {'class': 'input-group'},
+                            'prefix': '<span class="input-group-text">€</span>'
+                        }) }}
+                        {{ form_errors(form.prix) }}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        {{ form_row(form.destination, {
+                            'label': 'Destination',
+                            'label_attr': {'class': 'form-label'},
+                            'attr': {'class': 'form-control'}
+                        }) }}
+                        {{ form_errors(form.destination) }}
+                    </div>
+                </div>
+            </div>
+
+            {% if form.image is defined %}
+                <div class="mb-3">
+                    {{ form_row(form.image, {
+                        'label': 'Image',
+                        'label_attr': {'class': 'form-label'},
+                        'attr': {'class': 'form-control'}
+                    }) }}
+                    {{ form_errors(form.image) }}
+                    {% if offre.image %}
+                        <div class="mt-2">
+                            <img src="{{ asset('uploads/images/' ~ offre.image) }}" alt="{{ offre.titre }}" class="img-thumbnail" style="max-height: 150px">
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+            {% if form.tutorials is defined %}
+                <div class="mb-3">
+                    {{ form_row(form.tutorials, {
+                        'label': 'Tutoriels associés',
+                        'label_attr': {'class': 'form-label'},
+                        'attr': {'class': 'form-control'}
+                    }) }}
+                    {{ form_errors(form.tutorials) }}
+                </div>
+            {% endif %}
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn-view-all">
+                    <i class="fa fa-save"></i> Enregistrer
+                </button>
+            </div>
+        {{ form_end(form) }}
+
+        {# Option de suppression si pertinent #}
+        {% if offre.id is defined %}
+            <div class="mt-3">
+                <a href="{{ path('app_offre_delete', {'id': offre.id}) }}" 
+                   class="btn btn-danger"
+                   onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette offre ?');">
+                    Supprimer l'offre
+                </a>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block quick_actions %}
+    <div class="d-grid gap-2">
+        <a href="{{ path('app_offre') }}" class="btn-cancel">
+            <i class="fa fa-arrow-left"></i> Retour à la liste
+        </a>
+        {% if offre.id is defined %}
+            <a href="{{ path('app_offre', {'id': offre.id}) }}" class="btn-view-all">
+                <i class="fa fa-eye"></i> Voir l'offre
+            </a>
+            {{ include('offre/_delete_form.html.twig') }}
+        {% endif %}
+    </div>
+{% endblock %}

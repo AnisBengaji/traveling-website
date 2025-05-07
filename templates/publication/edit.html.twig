@@ -1,0 +1,89 @@
+{% extends 'admin/admin_dashboard.html.twig' %}
+
+{% block title %}Edit Publication - Admin{% endblock %}
+
+{% block content %}
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="brand">
+      <a href="{{ path('landing_index') }}" class="text-white text-decoration-none">Carint Admin</a>
+    </div>
+    <ul class="nav flex-column">
+      <li class="nav-item">
+        <a class="nav-link" href="{{ path('admin_dashboard') }}">
+          <i class="fa fa-tachometer me-2" aria-hidden="true"></i> Dashboard
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link active" href="{{ path('app_publication_index') }}">
+          <i class="fa fa-file-text me-2" aria-hidden="true"></i> Publications
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ path('app_category_index') }}">
+          <i class="fa fa-list me-2" aria-hidden="true"></i> Destinations
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ path('landing_service') }}">
+          <i class="fa fa-cogs me-2" aria-hidden="true"></i> Offres
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ path('landing_contact') }}">
+          <i class="fa fa-envelope me-2" aria-hidden="true"></i> Contact Requests
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">
+          <i class="fa fa-sign-out me-2" aria-hidden="true"></i> Logout
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="d-flex justify-content-between align-items-center">
+      <h4 class="mb-0">Edit Publication</h4>
+      <div>
+        <span class="me-3"><i class="fa fa-user me-1" aria-hidden="true"></i> Admin User</span>
+        <a href="#" class="btn btn-sm btn-outline-danger"><i class="fa fa-sign-out" aria-hidden="true"></i> Logout</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="container-fluid">
+      <div class="row mb-4">
+        <div class="col-12">
+          <div class="dashboard-card">
+            <h3>Edit Publication</h3>
+
+            {% for flash_error in app.flashes('error') %}
+                <div class="alert alert-danger">{{ flash_error }}</div>
+            {% endfor %}
+            {% for flash_success in app.flashes('success') %}
+                <div class="alert alert-success">{{ flash_success }}</div>
+            {% endfor %}
+
+            {{ include('publication/_form.html.twig', {
+                form: form,
+                button_label: 'Update'
+            }) }}
+
+            <div class="mt-4 d-flex justify-content-between align-items-center">
+              <a href="{{ path('app_publication_index') }}" class="btn btn-admin">
+                <i class="fa fa-arrow-left me-1"></i> Back to Publications
+              </a>
+              {{ include('publication/_delete_form.html.twig', {
+                  publication: publication
+              }) }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

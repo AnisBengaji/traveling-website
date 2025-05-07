@@ -1,0 +1,200 @@
+{% extends 'admin/admin_dashboard.html.twig' %}
+
+{% block title %}Liste des tutoriels pour l'offre : {{ offre.titre }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        background-color: #f8f9fa;
+        margin: 0;
+        padding: 0;
+      }
+      .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 250px;
+        height: 100vh;
+        background: #1e2a38;
+        color: white;
+        padding: 20px 0;
+        z-index: 1000;
+      }
+      .brand {
+        padding: 0 20px 20px;
+        font-size: 24px;
+        font-weight: 500;
+        color: white;
+      }
+      .nav-item {
+        padding: 5px 20px;
+      }
+      .nav-link {
+        color: #a4b1cd !important;
+        padding: 10px 15px;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+      }
+      .nav-link:hover, .nav-link.active {
+        background: rgba(255, 255, 255, 0.1);
+        color: white !important;
+      }
+      .nav-link i {
+        margin-right: 10px;
+        width: 20px;
+        text-align: center;
+      }
+      .main-content {
+        margin-left: 250px;
+        padding: 20px;
+      }
+      .topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 30px;
+        background: white;
+        margin-bottom: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      }
+      .dashboard-card {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        height: 100%;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      }
+      .dashboard-card h3 {
+        color: #333;
+        font-size: 18px;
+        margin-bottom: 15px;
+      }
+      .dashboard-card p {
+        color: #666;
+        margin-bottom: 15px;
+      }
+      .btn-view-all {
+        background: #0d6efd;
+        color: white;
+        padding: 8px 20px;
+        border-radius: 5px;
+        text-decoration: none;
+        display: inline-block;
+      }
+      .btn-view-all:hover {
+        background: #0b5ed7;
+        color: white;
+      }
+      .stats-card {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+      }
+      .stats-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+        color: #666;
+      }
+      .stats-item i {
+        margin-right: 10px;
+        width: 20px;
+        text-align: center;
+      }
+      .tracking-form {
+        display: flex;
+        gap: 10px;
+      }
+      .tracking-form input {
+        flex: 1;
+        padding: 8px 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+      }
+      .btn-track {
+        background: #0d6efd;
+        color: white;
+        border: none;
+        padding: 8px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      .logout-btn {
+        background: #dc3545;
+        color: white;
+        padding: 5px 15px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-size: 14px;
+      }
+      .logout-btn:hover {
+        background: #bb2d3b;
+        color: white;
+      }
+    </style>
+{% endblock %}
+
+{% block content %}
+    {{ parent() }}
+    <div class="container mt-4">
+        <h1>Liste des tutoriels pour l'offre : {{ offre.titre }}</h1>
+
+        {# Messages flash #}
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger">{{ message }}</div>
+        {% endfor %}
+
+        <a href="{{ path('app_tutorial_new') }}" class="btn btn-primary mb-3">Créer un nouveau tutoriel</a>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Nom du tutoriel</th>
+                    <th>Date de début</th>
+                    <th>Date de fin</th>
+                    <th>Prix</th>
+                    <th>URL</th>
+                    <th>Offre associée</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for tutorial in tutorials %}
+                    <tr>
+                        <td>{{ tutorial.id }}</td>
+                        <td>{{ tutorial.nomTutorial }}</td>
+                        <td>{{ tutorial.dateDebut ? tutorial.dateDebut|date('Y-m-d') : '' }}</td>
+                        <td>{{ tutorial.dateFin ? tutorial.dateFin|date('Y-m-d') : '' }}</td>
+                        <td>{{ tutorial.prixTutorial }}</td>
+                        <td><a href="{{ tutorial.url }}" target="_blank">{{ tutorial.url }}</a></td>
+                        <td>{{ tutorial.offre.titre }}</td>
+                        <td>
+                            <a href="{{ path('app_tutorial_show', {'id': tutorial.id}) }}" class="btn btn-info btn-sm">Voir</a>
+                            <a href="{{ path('app_tutorial_edit', {'id': tutorial.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
+                            <form method="post" action="{{ path('app_tutorial_delete', {'id': tutorial.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce tutoriel ?');" style="display: inline-block;">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ tutorial.id) }}">
+                                <button class="btn btn-danger btn-sm">Supprimer</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="8">Aucun tutoriel trouvé</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="{{ path('app_offre') }}" class="btn btn-secondary">Retour à la liste des offres</a>
+    </div>
+{% endblock %} 

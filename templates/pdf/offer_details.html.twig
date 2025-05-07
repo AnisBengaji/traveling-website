@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Détails de l'offre - {{ offer.titre }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .offer-title {
+            font-size: 24px;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        .offer-details {
+            margin-bottom: 20px;
+        }
+        .offer-image {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 20px;
+        }
+        .price {
+            font-size: 20px;
+            color: #27ae60;
+            margin-bottom: 15px;
+        }
+        .destination {
+            color: #3498db;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1 class="offer-title">{{ offer.titre }}</h1>
+    </div>
+
+    <div class="offer-details">
+        {% if offer.image %}
+            <img src="{{ absolute_url(asset('uploads/offers/' ~ offer.image)) }}" alt="{{ offer.titre }}" class="offer-image">
+        {% endif %}
+
+        <div class="destination">
+            <strong>Destination:</strong> {{ offer.destination }}
+        </div>
+
+        <div class="price">
+            <strong>Prix:</strong> {{ offer.prix }} €
+        </div>
+
+        <div class="description">
+            <h3>Description:</h3>
+            <p>{{ offer.description }}</p>
+        </div>
+    </div>
+</body>
+</html> 

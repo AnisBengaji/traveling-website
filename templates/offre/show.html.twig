@@ -1,0 +1,177 @@
+{# templates/offre/show.html.twig #}
+{% extends 'admin/admin_dashboard.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .star-rating {
+            font-size: 24px;
+            cursor: pointer;
+        }
+        .star-rating .star {
+            color: #ddd;
+            transition: color 0.2s;
+        }
+        .star-rating .star.active {
+            color: #ffd700;
+        }
+        .rating-info {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+{{ parent() }}
+<div class="main-content">
+    <!-- Top Bar -->
+    <div class="topbar">
+        <h1 class="h4 mb-0">Détails de l'offre</h1>
+        <div class="d-flex align-items-center gap-3">
+            <span><i class="fa fa-user"></i> Admin User</span>
+            <a href="#" class="logout-btn"><i class="fa fa-sign-out"></i> Logout</a>
+        </div>
+    </div>
+
+    <div class="dashboard-card">
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger">{{ message }}</div>
+        {% endfor %}
+
+        <div class="row">
+            <div class="col-md-4">
+                {% if offre.image %}
+                    <img src="{{ asset('uploads/images/' ~ offre.image) }}" alt="Image de l'offre" class="img-fluid rounded mb-3 w-100">
+                {% else %}
+                    <div class="text-center p-4 bg-light rounded mb-3">
+                        <i class="fa fa-image fa-3x text-muted"></i>
+                        <p class="mt-2">Aucune image</p>
+                    </div>
+                {% endif %}
+
+                <div class="rating-section text-center mt-3">
+                    <h5>Note moyenne</h5>
+                    <div class="star-rating" data-offer-id="{{ offre.id }}">
+                        {% for i in 1..5 %}
+                            <span class="star {% if offre.rating >= i %}active{% endif %}" data-value="{{ i }}">★</span>
+                        {% endfor %}
+                    </div>
+                    <div class="rating-info">
+                        {% if offre.ratingCount > 0 %}
+                            {{ offre.rating|number_format(1) }}/5 ({{ offre.ratingCount }} avis)
+                        {% else %}
+                            Aucun avis
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="mb-4">
+                    <h3 class="mb-3">{{ offre.titre }}</h3>
+                    <p class="text-muted mb-4">{{ offre.description }}</p>
+                    
+                    <div class="d-flex justify-content-between mb-3">
+                        <div>
+                            <strong><i class="fa fa-map-marker"></i> Destination:</strong>
+                            <span class="ms-2">{{ offre.destination }}</span>
+                        </div>
+                        <div>
+                            <strong><i class="fa fa-euro"></i> Prix:</strong>
+                            <span class="ms-2">{{ offre.prix }} €</span>
+                        </div>
+                    </div>
+
+                    {% if offre.tutorials|length > 0 %}
+                        <div class="mt-4">
+                            <h4 class="h5 mb-3">Tutoriels associés</h4>
+                            <ul class="list-group">
+                                {% for tutorial in offre.tutorials %}
+                                    <li class="list-group-item">
+                                        <i class="fa fa-book me-2"></i>
+                                        {{ tutorial.nomTutorial }}
+                                        <a href="{{ tutorial.url }}" target="_blank" class="ms-2">
+                                            <i class="fa fa-external-link"></i>
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="mt-4">
+                    <a href="{{ path('app_offre_edit', {'id': offre.id}) }}" class="btn-view-all">
+                        <i class="fa fa-edit"></i> Modifier
+                    </a>
+                    <a href="{{ path('app_offre_index') }}" class="btn btn-secondary ms-2">
+                        <i class="fa fa-arrow-left"></i> Retour
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const ratingSection = document.querySelector('.star-rating');
+            const stars = ratingSection.querySelectorAll('.star');
+            const offerId = ratingSection.dataset.offerId;
+
+            stars.forEach(star => {
+                star.addEventListener('mouseover', function() {
+                    const value = this.dataset.value;
+                    stars.forEach(s => {
+                        s.classList.toggle('active', s.dataset.value <= value);
+                    });
+                });
+
+                star.addEventListener('mouseout', function() {
+                    updateStarsDisplay();
+                });
+
+                star.addEventListener('click', function() {
+                    const rating = this.dataset.value;
+                    submitRating(rating);
+                });
+            });
+
+            function updateStarsDisplay() {
+                const ratingInfo = document.querySelector('.rating-info');
+                const currentRating = parseFloat(ratingInfo.textContent) || 0;
+                stars.forEach(s => {
+                    s.classList.toggle('active', s.dataset.value <= currentRating);
+                });
+            }
+
+            function submitRating(rating) {
+                fetch(`/offre/${offerId}/rate`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `rating=${rating}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const ratingInfo = document.querySelector('.rating-info');
+                        ratingInfo.textContent = `${data.newRating}/5 (${data.ratingCount} avis)`;
+                        updateStarsDisplay();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            }
+        });
+    </script>
+{% endblock %}

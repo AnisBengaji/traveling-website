@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Export Offres & Tutoriels</title>
+    <style>
+        @page {
+            margin: 2cm;
+            size: A4;
+        }
+        body { 
+            font-family: Arial, sans-serif; 
+            font-size: 12px;
+            line-height: 1.5;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .header { 
+            text-align: center; 
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #2c3e50;
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+        .logo { 
+            max-width: 150px; 
+            margin-bottom: 15px; 
+        }
+        h1, h2 { 
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        h1 {
+            font-size: 24px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        h2 {
+            font-size: 18px;
+            margin-top: 30px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-bottom: 30px;
+            page-break-inside: auto;
+        }
+        tr {
+            page-break-inside: avoid;
+            page-break-after: auto;
+        }
+        th, td { 
+            border: 1px solid #ddd; 
+            padding: 12px; 
+            text-align: left; 
+        }
+        th { 
+            background: #2c3e50;
+            color: white;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 1px;
+        }
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        .footer { 
+            text-align: center; 
+            margin-top: 30px; 
+            font-size: 10px; 
+            color: #666;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+        .date {
+            font-style: italic;
+            margin-bottom: 20px;
+            color: #666;
+        }
+        .page-break {
+            page-break-after: always;
+        }
+        .info-box {
+            background-color: #f8f9fa;
+            border-left: 4px solid #2c3e50;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .total {
+            text-align: right;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="{{ absolute_url(asset('images/logo.png')) }}" alt="Logo" class="logo">
+        <h1>Liste des Offres et Tutoriels</h1>
+        <p class="date">Export généré le {{ "now"|date("d/m/Y H:i") }}</p>
+    </div>
+
+    <div class="info-box">
+        <p>Ce document contient la liste complète des offres et tutoriels disponibles sur notre plateforme.</p>
+    </div>
+
+    <h2>Liste des Offres</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Titre</th>
+                <th>Description</th>
+                <th>Prix</th>
+                <th>Destination</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for offre in offres %}
+            <tr>
+                <td>{{ offre.id }}</td>
+                <td>{{ offre.titre }}</td>
+                <td>{{ offre.description }}</td>
+                <td>{{ offre.prix }} €</td>
+                <td>{{ offre.destination }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="total">
+        Nombre total d'offres : {{ offres|length }}
+    </div>
+
+    <div class="page-break"></div>
+
+    <h2>Liste des Tutoriels</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nom</th>
+                <th>Date début</th>
+                <th>Prix</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for tutorial in tutorials %}
+            <tr>
+                <td>{{ tutorial.id }}</td>
+                <td>{{ tutorial.nomTutorial }}</td>
+                <td>{{ tutorial.dateDebut ? tutorial.dateDebut|date('d/m/Y') : '' }}</td>
+                <td>{{ tutorial.prixTutorial }} €</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="total">
+        Nombre total de tutoriels : {{ tutorials|length }}
+    </div>
+
+    <div class="footer">
+        <p>© {{ "now"|date("Y") }} - Tous droits réservés</p>
+    </div>
+</body>
+</html> 

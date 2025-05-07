@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Confirmation de réservation</title>
+    <style>
+        /* Styles de base */
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: #f7fafc;
+            margin: 0;
+            padding: 20px 0;
+            color: #4a5568;
+        }
+        .container {
+            max-width: 680px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        .coordinates-wrapper {
+    margin-top: 8px;
+    width: 100%;
+}
+
+.coordinate-item {
+    display: flex;
+    justify-content: space-between;
+    margin: 6px 0;
+    padding: 8px 12px;
+    background-color: #f0f4f8;
+    border-radius: 4px;
+}
+
+.coordinate-type {
+    color: #4a5568;
+    font-weight: 500;
+    margin-right: 15px;
+}
+
+.coordinate-value {
+    color: #2d3748;
+    font-weight: 600;
+    font-family: monospace;
+}
+        
+        /* En-tête */
+        .header {
+            background: linear-gradient(135deg, #2d87f0 0%, #1a5ebf 100%);
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .logo {
+            height: 60px;
+            margin-bottom: 20px;
+        }
+        
+        /* Contenu principal */
+        .content {
+            padding: 40px 30px;
+        }
+        
+        /* Typographie */
+        h1 {
+            color: white;
+            margin: 0;
+            font-size: 28px;
+            font-weight: 600;
+        }
+        h2 {
+            color: #2d3748;
+            margin-top: 30px;
+            font-size: 22px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 10px;
+        }
+        
+        /* Liste de détails */
+        .details-list {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #edf2f7;
+        }
+        .detail-item:last-child {
+            border-bottom: none;
+        }
+        .detail-label {
+            color: #718096;
+            font-weight: 500;
+        }
+        .detail-value {
+            color: #2d3748;
+            font-weight: 600;
+        }
+        
+        /* Bouton CTA */
+        .cta-button {
+            display: inline-block;
+            background: #2d87f0;
+            color: white !important;
+            text-decoration: none;
+            padding: 14px 28px;
+            border-radius: 6px;
+            font-weight: 600;
+            margin: 25px 0;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(45, 135, 240, 0.3);
+        }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 25px;
+            background: #f8fafc;
+            color: #718096;
+            font-size: 14px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 600px) {
+            .container {
+                border-radius: 0;
+            }
+            .content {
+                padding: 30px 20px;
+            }
+            h1 {
+                font-size: 24px;
+            }
+            h2 {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="{{ asset('images/Logo.png') }}" alt="Logo" class="logo">
+            <h1>Confirmation de réservation</h1>
+        </div>
+
+        <div class="content">
+            <p>Bonjour {{ user.nom }},</p>
+            <p style="font-size: 16px; line-height: 1.6;">Votre réservation pour <strong>{{ reservation.evenement.nom }}</strong> a été confirmée avec succès 🎉</p>
+
+            <h2>📅 Détails de l'événement</h2>
+            <div class="details-list">
+                <div class="detail-item">
+                    <span class="detail-label">Événement</span>
+                    <span class="detail-value">{{ reservation.evenement.nom }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Lieu</span>
+                    <span class="detail-value">{{ reservation.evenement.lieu }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Description</span>
+                    <span class="detail-value">{{ reservation.evenement.Description }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Prix</span>
+                    <span class="detail-value">{{ reservation.priceTotal  }} €</span>
+                </div>
+            </div>
+<h2>📍 Itinéraire</h2>
+<div class="details-list">
+    <div class="detail-item">
+        <span class="detail-label">Coordonnées GPS</span>
+        <div class="coordinates-wrapper">
+            <div class="coordinate-item">
+                <span class="coordinate-type">Latitude:</span>
+                <span class="coordinate-value">{{ reservation.evenement.latitude }}</span>
+            </div>
+            <div class="coordinate-item">
+                <span class="coordinate-type">Longitude:</span>
+                <span class="coordinate-value">{{ reservation.evenement.longitude }}</span>
+            </div>
+        </div>
+    </div>
+</div>
+            <center>
+                <a href="https://maps.google.com/?q={{ reservation.evenement.latitude }},{{ reservation.evenement.longitude }}" 
+                   class="cta-button">
+                    Voir l'itinéraire →
+                </a>
+            </center>
+        </div>
+
+        <div class="footer">
+            <p>Besoin d'aide ? Contactez-nous à <a href="TRIPPIN@example.com" style="color: #2d87f0;">support@example.com</a></p>
+            <p>© {{ "now"|date("Y") }}TRIPPIN - Tous droits réservés</p>
+        </div>
+    </div>
+</body>
+</html>

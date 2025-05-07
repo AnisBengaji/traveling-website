@@ -1,0 +1,220 @@
+{% extends 'admin/admin_dashboard.html.twig' %}
+
+{% block title %}Edit Comment{% endblock %}
+
+{% block content %}
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="brand">
+            <a href="{{ path('landing_index') }}" class="text-white text-decoration-none">Carint Admin</a>
+        </div>
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('admin_dashboard') }}">
+                    <i class="fa fa-tachometer me-2" aria-hidden="true"></i> Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('admin_users') }}">
+                    <i class="fa fa-users me-2" aria-hidden="true"></i> Users
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('app_publication_index') }}">
+                    <i class="fa fa-newspaper-o me-2" aria-hidden="true"></i> Publications
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="{{ path('app_comment_index') }}">
+                    <i class="fa fa-comments me-2" aria-hidden="true"></i> Comments
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('app_destination_index') }}">
+                    <i class="fa fa-map-marker me-2" aria-hidden="true"></i> Destinations
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('evenement_admin') }}">
+                    <i class="fa fa-calendar me-2" aria-hidden="true"></i> Evenements
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('reservation_index') }}">
+                    <i class="fa fa-ticket me-2" aria-hidden="true"></i> Reservations
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('app_offre_index') }}">
+                    <i class="fa fa-ticket me-2" aria-hidden="true"></i> Offres
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <i class="fa fa-envelope me-2" aria-hidden="true"></i> Contact Requests
+                </a>
+            </li>
+            <li class="nav-item">
+                <form method="post" action="{{ path('app_logout') }}">
+                    <input type="hidden" name="_token" value="{{ csrf_token('logout') }}">
+                    <button type="submit" class="nav-link btn btn-link p-0 text-start text-white" style="width: 100%;">
+                        <i class="fa fa-sign-out me-2" aria-hidden="true"></i> Logout
+                    </button>
+                </form>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Topbar -->
+    <div class="topbar">
+        <div class="d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">Edit Comment</h4>
+            <div>
+                <span class="me-3"><i class="fa fa-user me-1" aria-hidden="true"></i> Admin User</span>
+                <form method="post" action="{{ path('app_logout') }}" style="display: inline;">
+                    <input type="hidden" name="_token" value="{{ csrf_token('logout') }}">
+                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                        <i class="fa fa-sign-out" aria-hidden="true"></i> Logout
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container-fluid">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="dashboard-card">
+                        <h3>Edit Comment</h3>
+                        
+                        <div class="mt-4">
+                            {{ include('comment/_form.html.twig') }}
+                        </div>
+
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* Base Dashboard Styles */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f6f9;
+            color: #333;
+        }
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            height: 100%;
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+        .sidebar .brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .sidebar .nav-link {
+            color: #bdc3c7;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        .sidebar .nav-link:hover, .sidebar .nav-link.active {
+            background: #34495e;
+            color: white;
+        }
+        .topbar {
+            background: #ffffff;
+            padding: 15px 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: fixed;
+            top: 0;
+            left: 250px;
+            right: 0;
+            z-index: 1000;
+        }
+        .main-content {
+            margin-left: 250px;
+            padding: 80px 20px 20px;
+        }
+        .dashboard-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+        }
+        .dashboard-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-label {
+            font-weight: 500;
+            color: #2c3e50;
+        }
+        .form-control, .form-select {
+            border-radius: 5px;
+            border: 1px solid #ced4da;
+            padding: 10px;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.2);
+        }
+        .text-danger {
+            font-size: 0.85rem;
+            margin-top: 5px;
+        }
+
+        /* Button Styles */
+        .btn {
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .btn-outline-danger {
+            border-color: #dc3545;
+            color: #dc3545;
+        }
+        .btn-outline-danger:hover {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 200px;
+            }
+            .main-content {
+                margin-left: 200px;
+            }
+            .topbar {
+                left: 200px;
+            }
+            .form-control, .form-select {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+{% endblock %}

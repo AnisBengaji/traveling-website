@@ -1,0 +1,1514 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tripin - Service Community{% endblock %}
+
+{% block head %}
+    <meta name="csrf-token" content="{{ csrf_token('like_dislike') }}">
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet" rel="preload" as="style" onload="this.rel='stylesheet'">
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet" rel="preload" as="style" onload="this.rel='stylesheet'">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f2f5;
+            color: #1c1e21;
+        }
+        .container {
+            max-width: 900px;
+            position: relative;
+        }
+        .search-language-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .search-bar {
+            flex-grow: 1;
+            max-width: 400px;
+            position: relative;
+        }
+        .search-bar input {
+            width: 100%;
+            padding: 8px 12px;
+            border-radius: 20px;
+            border: 1px solid #ccd0d5;
+            background-color: #f0f2f5;
+            font-size: 0.9rem;
+            transition: border-color 0.2s ease, background-color 0.2s ease;
+        }
+        .search-bar input:focus {
+            border-color: #1877f2;
+            background-color: #fff;
+            outline: none;
+        }
+        .search-bar .spinner {
+            display: none;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #65676b;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+        }
+        .search-bar.loading .spinner {
+            display: block;
+        }
+        .language-selector {
+            width: 150px;
+        }
+        .language-selector select {
+            width: 100%;
+            padding: 8px;
+            border-radius: 20px;
+            border: 1px solid #ccd0d5;
+            background-color: #f0f2f5;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: border-color 0.2s ease;
+        }
+        .language-selector select:focus {
+            border-color: #1877f2;
+            outline: none;
+        }
+        .comment-section {
+            display: none;
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: opacity 0.3s ease, max-height 0.3s ease;
+            will-change: opacity, max-height;
+        }
+        .comment-section.active {
+            display: block;
+            max-height: 2000px;
+            opacity: 1;
+            padding-top: 15px;
+            margin-top: 10px;
+            border-top: 1px solid #e4e6eb;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .add-comment-form {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            align-items: flex-start;
+        }
+        .add-comment-form .user-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: #1877f2;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+            transition: transform 0.2s ease;
+            will-change: transform;
+        }
+        .add-comment-form .user-avatar:hover {
+            transform: scale(1.1);
+        }
+        .add-comment-form textarea {
+            flex-grow: 1;
+            border-radius: 20px;
+            padding: 10px 15px;
+            border: 1px solid #ccd0d5;
+            background-color: #f0f2f5;
+            font-size: 0.9rem;
+            resize: none;
+            min-height: 60px;
+            max-height: 120px;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .add-comment-form textarea:focus {
+            border-color: #1877f2;
+            background-color: #fff;
+            box-shadow: 0 0 5px rgba(24, 119, 242, 0.3);
+            outline: none;
+        }
+        .add-comment-form button {
+            border-radius: 20px;
+            padding: 8px 15px;
+            background-color: #1877f2;
+            border: none;
+            color: white;
+            font-size: 0.9rem;
+            transition: background-color 0.2s ease, opacity 0.2s ease, transform 0.2s ease;
+            position: relative;
+            will-change: transform, background-color;
+        }
+        .add-comment-form button:hover {
+            background-color: #166fe5;
+            transform: translateY(-2px);
+        }
+        .add-comment-form button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .add-comment-form .spinner {
+            display: none;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #fff;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .add-comment-form button:disabled .spinner {
+            display: block;
+        }
+        .add-comment-form button:disabled span {
+            visibility: hidden;
+        }
+        @keyframes spin {
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+        .comment-item {
+            margin-bottom: 15px;
+            animation: fadeIn 0.3s ease forwards;
+        }
+        .comment-item .bg-light {
+            background-color: #f0f2f5 !important;
+            border-radius: 18px !important;
+            box-shadow: none !important;
+            transition: background-color 0.2s ease;
+        }
+        .comment-item .bg-light:hover {
+            background-color: #e8eaef !important;
+        }
+        .post-trigger {
+            background: #fff;
+            border-radius: 8px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            will-change: transform, box-shadow;
+        }
+        .post-trigger:hover {
+            background: #f5f5f5;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+        }
+        .post-trigger .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #1877f2;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            transition: transform 0.2s ease;
+            will-change: transform;
+        }
+        .post-trigger .avatar:hover {
+            transform: scale(1.1);
+        }
+        .post-trigger span {
+            color: #65676b;
+            font-size: 1rem;
+            flex-grow: 1;
+            font-weight: 400;
+        }
+        .post-form-container {
+            display: none;
+            opacity: 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            transition: opacity 0.3s ease, max-height 0.3s ease;
+            max-height: 0;
+            overflow: hidden;
+            will-change: opacity, max-height;
+        }
+        .post-form-container.active {
+            display: block;
+            opacity: 1;
+            max-height: 1000px;
+        }
+        .post-form-container .card-body {
+            padding: 20px;
+        }
+        .post-form-container button[type="submit"] {
+            background-color: #1877f2;
+            border: none;
+            font-weight: 500;
+            padding: 8px 24px;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+            will-change: transform, background-color;
+        }
+        .post-form-container button[type="submit"]:hover {
+            background-color: #166fe5;
+            transform: translateY(-2px);
+        }
+        .streams-filter {
+            background: #fff;
+            border-radius: 8px;
+            padding: 16px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .streams-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .stream-tag {
+            padding: 6px 12px;
+            border-radius: 18px;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+            background-color: #e4e6eb;
+            color: #050505;
+            font-size: 0.9rem;
+            font-weight: 500;
+            will-change: transform, background-color;
+        }
+        .stream-tag:hover {
+            background: #d8dadf;
+            transform: translateY(-2px);
+        }
+        .stream-tag.active {
+            background: #1877f2;
+            color: white;
+        }
+        .fb-post {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            overflow: hidden;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            will-change: transform, box-shadow;
+        }
+        .fb-post:hover {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+        }
+        .fb-post img {
+            max-height: 500px;
+            object-fit: cover;
+            width: 100%;
+            loading: lazy;
+        }
+        .fb-post .card-header {
+            background: white;
+            border-bottom: none;
+            padding: 12px 16px;
+        }
+        .fb-post .card-body {
+            padding: 0 20px 16px;
+        }
+        .fb-post h4.card-title {
+            margin: 12px 0;
+            font-size: 1.25rem;
+            color: #050505;
+        }
+        .fb-post p.card-text {
+            color: #050505;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        .fb-post .rounded-circle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .fb-post .d-flex.justify-content-between {
+            border-color: #e4e6eb !important;
+            padding: 8px 0;
+        }
+        .fb-post .btn-link {
+            color: #65676b;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            padding: 6px 12px;
+            border-radius: 4px;
+            transition: background-color 0.2s ease, color 0.2s ease;
+            position: relative;
+        }
+        .fb-post .btn-link:hover {
+            background-color: #f0f2f5;
+            color: #050505;
+        }
+        .fb-post .btn-like.liked {
+            color: #1877f2;
+            font-weight: 600;
+        }
+        .fb-post .btn-like.liked i {
+            color: #1877f2;
+        }
+        .fb-post .btn-dislike.disliked {
+            color: #dc3545;
+            font-weight: 600;
+        }
+        .fb-post .btn-dislike.disliked i {
+            color: #dc3545;
+        }
+        .fb-post .btn-like .spinner,
+        .fb-post .btn-dislike .spinner,
+        .fb-post .share-btn .spinner {
+            display: none;
+            width: 14px;
+            height: 14px;
+            border: 2px solid #65676b;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-left: 5px;
+        }
+        .fb-post .btn-like.loading .spinner,
+        .fb-post .btn-dislike.loading .spinner,
+        .fb-post .share-btn.loading .spinner {
+            display: inline-block;
+        }
+        .fb-post .btn-like.loading span,
+        .fb-post .btn-dislike.loading span,
+        .fb-post .share-btn.loading span {
+            visibility: hidden;
+        }
+        .fb-post .badge {
+            font-size: 0.75rem;
+            padding: 3px 6px;
+            transition: background-color 0.2s ease;
+        }
+        .fb-post .btn-outline-primary {
+            color: #1877f2;
+            border-color: #1877f2;
+            padding: 4px 12px;
+            transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+            font-size: 0.8rem;
+            font-weight: 500;
+            will-change: transform, background-color;
+        }
+        .fb-post .btn-outline-primary:hover {
+            background-color: #1877f2;
+            color: white;
+            transform: translateY(-2px);
+        }
+        .fb-post .share-btn {
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+        .fb-post .share-btn:hover {
+            background-color: #f0f2f5;
+            color: #050505;
+        }
+        .empty-state {
+            background: white;
+            border-radius: 8px;
+            padding: 40px 20px;
+            text-align: center;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+        .empty-state i {
+            color: #65676b;
+            margin-bottom: 16px;
+        }
+        .empty-state p {
+            color: #65676b;
+            font-size: 1rem;
+        }
+        h1.text-center {
+            font-size: 1.8rem;
+            margin-bottom: 24px;
+            color: #1877f2;
+        }
+        h2.mb-4 {
+            font-size: 1.5rem;
+            color: #050505;
+            margin: 24px 0 16px;
+            padding-bottom: 8px;
+        }
+        .form-control {
+            background-color: #f0f2f5;
+            border: 1px solid #ccd0d5;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .form-control:focus {
+            background-color: #fff;
+            border-color: #1877f2;
+            box-shadow: 0 0 0 2px rgba(24, 119, 242, 0.2);
+        }
+        .form-error {
+            color: #dc3545;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+        .form-error-container {
+            color: #dc3545;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            display: none;
+            padding: 10px;
+            background-color: #f8d7da;
+            border-radius: 4px;
+        }
+        @media (max-width: 767px) {
+            .container {
+                padding: 0 10px;
+            }
+            .search-language-container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .search-bar, .language-selector {
+                max-width: 100%;
+            }
+            .post-form-container .card-body {
+                padding: 15px;
+            }
+            .fb-post .card-body {
+                padding: 0 15px 15px;
+            }
+            .fb-post .btn-link {
+                padding: 6px 8px;
+                font-size: 0.85rem;
+            }
+            .stream-tag {
+                padding: 5px 10px;
+                font-size: 0.85rem;
+            }
+            .add-comment-form textarea {
+                font-size: 0.85rem;
+                padding: 8px 12px;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container py-4">
+        <h1 class="text-center mb-5 fw-bold text-primary">Service Community</h1>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-8 mx-auto">
+                <!-- Search Bar and Language Selector -->
+                <div class="search-language-container">
+                    <div class="search-bar">
+                        <input type="text" id="search-posts" placeholder="Search posts..." aria-label="Search posts">
+                        <div class="spinner"></div>
+                    </div>
+                    <div class="language-selector">
+                        <select id="language-select" aria-label="Select language">
+                            <option value="en">English</option>
+                            <option value="fr">Français</option>
+                            <option value="es">Español</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Post Form Trigger -->
+                <div class="post-trigger">
+                    <div class="avatar">
+                        {% if app.user %}
+                            {{ app.user.nom|default(app.user.email)|slice(0, 1)|upper }}
+                        {% else %}
+                            <i class="fa fa-user"></i>
+                        {% endif %}
+                    </div>
+                    <span>Share your thoughts...</span>
+                </div>
+
+                <!-- Publication Form -->
+                <div class="post-form-container card">
+                    <div class="card-body">
+                        <h3 class="mb-4 fw-semibold text-dark">Create a Post</h3>
+                        <div class="form-error-container"></div>
+                        
+                        {{ form_start(publication_form, {'attr': {'class': 'needs-validation', 'novalidate': '', 'id': 'publication-form', 'action': path('landing_service')}}) }}
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    {{ form_label(publication_form.title, 'Title') }}
+                                    {{ form_widget(publication_form.title, {'attr': {'class': 'form-control rounded-pill', 'placeholder': 'Post title'}}) }}
+                                    {{ form_errors(publication_form.title, {'attr': {'class': 'form-error'}}) }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    {{ form_label(publication_form.category, 'Category') }}
+                                    {{ form_widget(publication_form.category, {'attr': {'class': 'form-control rounded-pill'}}) }}
+                                    {{ form_errors(publication_form.category, {'attr': {'class': 'form-error'}}) }}
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                {{ form_label(publication_form.contenu, 'Content') }}
+                                {{ form_widget(publication_form.contenu, {'attr': {'class': 'form-control rounded-3', 'rows': '4', 'placeholder': 'What\'s on your mind?'}}) }}
+                                {{ form_errors(publication_form.contenu, {'attr': {'class': 'form-error'}}) }}
+                            </div>
+                            <div class="mb-4">
+                                {{ form_label(publication_form.image, 'Image (optional)') }}
+                                {{ form_widget(publication_form.image, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_errors(publication_form.image, {'attr': {'class': 'form-error'}}) }}
+                            </div>
+                            <button type="submit" class="btn btn-primary rounded-pill">
+                                <i class="fa fa-plus me-2"></i>Post
+                            </button>
+                        {{ form_end(publication_form) }}
+                    </div>
+                </div>
+
+                <h2 class="mb-4 fw-semibold text-dark border-bottom pb-2">Recent Posts</h2>
+
+                <!-- Category Filters -->
+                <div class="streams-filter">
+                
+                    <div class="streams-header d-flex align-items-center mb-3">
+                        <div class="streams-icon bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 30px; height: 30px;">
+                            <i class="fa fa-filter"></i>
+                        </div>
+                        <h3 class="streams-title fw-semibold mb-0">Explore Discussions</h3>
+                    </div>
+                    <div class="streams-tags">
+                        <span class="stream-tag all-streams active" data-category="all">
+                            <i class="fa fa-globe me-1"></i>All
+                        </span>
+                        {% for category in categories %}
+                            <span class="stream-tag" data-category="{{ category.idCategory }}">
+                                <i class="fa fa-{{ random(['hashtag', 'tag', 'bookmark', 'bullhorn']) }} me-1"></i>{{ category.nomCategory }}
+                            </span>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Publications Container -->
+                <div id="publications-container">
+                    {% for publication in publications %}
+                        <div class="card mb-4 shadow-sm border-0 fb-post" data-category="{{ publication.category ? publication.category.idCategory : '' }}" data-post-id="{{ publication.idPublication }}">
+                            <div class="card-header bg-white border-0 p-3">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div class="d-flex align-items-center">
+                                        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
+                                            {{ publication.author.nom|default(publication.author.nom)|slice(0, 1)|upper }}
+                                        </div>
+                                        <div class="ms-3">
+                                            <h5 class="mb-0 fw-semibold">
+                                                {{ publication.author.nom|default('') }} {{ publication.author.prenom|default('') }}
+                                                {% if not publication.author.nom and not publication.author.prenom %}
+                                                    {{ publication.author.email|default('Anonymous') }}
+                                                {% endif %}
+                                            </h5>
+                                            <small class="text-muted">
+                                                <i class="fa fa-calendar me-1" aria-hidden="true"></i>
+                                                {{ publication.datePublication|date('M j, Y') }}
+                                            </small>
+                                        </div>
+                                    </div>
+                                    {% if app.user and publication.author.id == app.user.id %}
+                                        <a href="{{ path('edit_publication', {'id_publication': publication.idPublication}) }}" class="btn btn-sm btn-outline-primary rounded-pill edit-post-btn" data-post-id="{{ publication.idPublication }}">
+                                            <i class="fa fa-edit me-1"></i>Edit
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% if publication.image %}
+                                <img src="{{ asset('Uploads/publications/' ~ publication.image) }}" class="card-img-top" alt="{{ publication.title }}" loading="lazy">
+                            {% endif %}
+                            <div class="card-body">
+                                <h4 class="card-title mb-3 fw-bold">{{ publication.title }}</h4>
+                                <p class="card-text text-dark">{{ publication.contenu }}</p>
+                                <div class="d-flex justify-content-between align-items-center border-top border-bottom py-3 mt-3">
+                                    <div>
+                                        {% if app.user and (publication.visibility == 'public' or publication.author == app.user) %}
+                                            <button class="btn btn-link text-muted p-0 me-3 btn-like {{ publication.isLikedByUser(app.user) ? 'liked' : '' }}" data-post-id="{{ publication.idPublication }}">
+                                                <i class="fa fa-thumbs-up me-1"></i>Like
+                                                <span id="like-count-{{ publication.idPublication }}">{{ publication.likes|length }}</span>
+                                                <span class="spinner"></span>
+                                            </button>
+                                            <button class="btn btn-link text-muted p-0 me-3 btn-dislike {{ publication.isDislikedByUser(app.user) ? 'disliked' : '' }}" data-post-id="{{ publication.idPublication }}">
+                                                <i class="fa fa-thumbs-down me-1"></i>Dislike
+                                                <span id="dislike-count-{{ publication.idPublication }}">{{ publication.dislikes|length }}</span>
+                                                <span class="spinner"></span>
+                                            </button>
+                                        {% else %}
+                                            <button class="btn btn-link text-muted p-0 me-3" disabled>
+                                                <i class="fa fa-thumbs-up me-1"></i>Like
+                                                <span id="like-count-{{ publication.idPublication }}">{{ publication.likes|length }}</span>
+                                            </button>
+                                            <button class="btn btn-link text-muted p-0 me-3" disabled>
+                                                <i class="fa fa-thumbs-down me-1"></i>Dislike
+                                                <span id="dislike-count-{{ publication.idPublication }}">{{ publication.dislikes|length }}</span>
+                                            </button>
+                                        {% endif %}
+                                        <button class="btn btn-link text-muted p-0 comment-toggle" data-post-id="{{ publication.idPublication }}">
+                                            <i class="fa fa-comment me-1"></i>Comment
+                                            <span class="badge bg-primary text-white ms-1">{{ publication.comments|length }}</span>
+                                        </button>
+                                    </div>
+                                    {% if app.user and publication.author.id != app.user.id %}
+                                        <button class="btn btn-link text-muted p-0 share-btn" data-url="{{ url('app_publication_show', {'id': publication.idPublication}) }}">
+                                            <i class="fa fa-share me-1"></i>Share
+                                            <span class="spinner"></span>
+                                        </button>
+                                    {% endif %}
+                                </div>
+                                <!-- Comments -->
+                                <div class="comment-section" id="comments-{{ publication.idPublication }}">
+                                    <div class="comments-container mb-4">
+                                        {% if publication.comments is defined and publication.comments|length > 0 %}
+                                            {% for comment in publication.comments %}
+                                                <div class="comment-item d-flex mb-3" style="display: none;">
+                                                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3" style="width: 35px; height: 35px; flex-shrink: 0;">
+                                                        {{ comment.author.nom|default(comment.author.email)|slice(0, 1)|upper }}
+                                                    </div>
+                                                    <div class="bg-light p-3 rounded flex-grow-1 shadow-sm">
+                                                        <div class="d-flex justify-content-between">
+                                                            <h6 class="mb-1 fw-semibold">{{ comment.author.nom|default(comment.author.email|default('Anonymous')) }}</h6>
+                                                            <small class="text-muted">{{ comment.getDateComment|date('M j, Y') }}</small>
+                                                        </div>
+                                                        <p class="mb-0">{{ comment.content }}</p>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        {% else %}
+                                            <div class="text-muted text-center py-3 bg-light rounded">
+                                                <i class="fa fa-info-circle me-1" aria-hidden="true"></i>No comments yet.
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="add-comment-form">
+                                        {% if app.user %}
+                                            {{ form_start(forms[publication.idPublication], {'attr': {'class': 'd-flex align-items-center w-100'}}) }}
+                                                <div class="user-avatar">
+                                                    {{ app.user.nom|default(app.user.email)|slice(0, 1)|upper }}
+                                                </div>
+                                                {{ form_widget(forms[publication.idPublication].content, {
+                                                    'attr': {
+                                                        'class': 'form-control rounded-pill me-2 auto-resize',
+                                                        'placeholder': 'Add a comment...',
+                                                        'rows': 3,
+                                                        'required': 'required'
+                                                    }
+                                                }) }}
+                                                <button type="submit" class="btn btn-primary btn-sm rounded-pill">
+                                                    <span>Post</span>
+                                                    <div class="spinner"></div>
+                                                </button>
+                                            {{ form_end(forms[publication.idPublication]) }}
+                                        {% else %}
+                                            <div class="text-muted text-center py-3 bg-light rounded">
+                                                <i class="fa fa-lock me-1" aria-hidden="true"></i>Please log in to comment.
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="comment-error text-danger mt-2" style="display: none;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="card empty-state">
+                            <i class="fa fa-info-circle fa-2x text-muted mb-3" aria-hidden="true"></i>
+                            <p class="text-muted">No posts available at the moment.</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <audio id="notification-sound" src="{{ asset('sounds/notification.mp3') }}" preload="auto"></audio>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            if (typeof jQuery === 'undefined') {
+                console.error('jQuery not loaded from base template');
+                alert('jQuery is not loaded. Please check the base template.');
+                return;
+            }
+
+            const $ = jQuery;
+            console.log('jQuery version:', $.fn.jquery);
+
+            // CSRF token
+            const csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+            // Cached selectors
+            const $postTrigger = $('.post-trigger');
+            const $postFormContainer = $('.post-form-container');
+            const $publicationForm = $('#publication-form');
+            const $searchPosts = $('#search-posts');
+            const $languageSelect = $('#language-select');
+            const $publicationsContainer = $('#publications-container');
+            const $formErrorContainer = $('.form-error-container');
+
+            // Debounce utility
+            function debounce(func, wait) {
+                let timeout;
+                return function (...args) {
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => func.apply(this, args), wait);
+                };
+            }
+
+            // Auto-resize textarea
+            function autoResizeTextarea($textarea) {
+                requestAnimationFrame(() => {
+                    $textarea.each(function() {
+                        this.style.height = 'auto';
+                        this.style.height = (this.scrollHeight) + 'px';
+                    });
+                });
+            }
+
+            // IntersectionObserver for lazy loading comments
+            function setupCommentObserver() {
+                if (!('IntersectionObserver' in window)) {
+                    console.warn('IntersectionObserver not supported, showing comments immediately');
+                    $('.comment-section .comment-item').fadeIn(200);
+                    return;
+                }
+
+                const commentSections = document.querySelectorAll('.comment-section');
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const $section = $(entry.target);
+                            const postId = $section.attr('id').replace('comments-', '');
+                            console.log('Loading comments for post:', postId);
+                            $section.find('.comment-item').each(function(index) {
+                                $(this).delay(index * 50).fadeIn(200);
+                            });
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, {
+                    rootMargin: '100px',
+                    threshold: 0.1
+                });
+
+                commentSections.forEach(section => observer.observe(section));
+            }
+
+            // Initialize components
+            function initializeComponents() {
+                $('.comment-section').removeClass('active');
+                $postFormContainer.removeClass('active');
+                $formErrorContainer.hide();
+                $('.comment-error').hide();
+                autoResizeTextarea($('.auto-resize'));
+                setupCommentObserver();
+                console.log('Initialized comment sections:', $('.comment-section').length);
+                console.log('Initialized post form container');
+                console.log('Edit buttons visible for posts:', $('.edit-post-btn').length);
+            }
+
+            // Toggle post form
+            const togglePostForm = debounce(function() {
+                const isActive = $postFormContainer.hasClass('active');
+                console.log('Toggling post form, current state:', isActive);
+
+                requestAnimationFrame(() => {
+                    $postFormContainer.toggleClass('active');
+                    if (!isActive) {
+                        $postFormContainer[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        $publicationForm.find('input:first').focus();
+                    }
+                });
+            }, 200);
+
+            // Update or add publication to the DOM
+            function updateOrAddPublication(data) {
+                const authorName = (data.author?.name || data.author?.email || 'Anonymous').trim();
+                const postId = data.idPublication;
+                const $existingPost = $publicationsContainer.find(`.fb-post[data-post-id="${postId}"]`);
+
+                const postHtml = `
+                    <div class="card mb-4 shadow-sm border-0 fb-post" data-category="${data.categoryId || ''}" data-post-id="${postId}">
+                        <div class="card-header bg-white border-0 p-3">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div class="d-flex align-items-center">
+                                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
+                                        ${authorName.charAt(0).toUpperCase()}
+                                    </div>
+                                    <div class="ms-3">
+                                        <h5 class="mb-0 fw-semibold">${authorName}</h5>
+                                        <small class="text-muted">
+                                            <i class="fa fa-calendar me-1" aria-hidden="true"></i>
+                                            ${data.datePublication || new Date().toLocaleString()}
+                                        </small>
+                                    </div>
+                                </div>
+                                ${data.isAuthor ? `
+                                    <a href="${data.editUrl || '#'}" class="btn btn-sm btn-outline-primary rounded-pill edit-post-btn" data-post-id="${postId}">
+                                        <i class="fa fa-edit me-1"></i>Edit
+                                    </a>
+                                ` : ''}
+                            </div>
+                        </div>
+                        ${data.image ? `<img src="${data.image}" class="card-img-top" alt="${data.title || 'Publication'}" loading="lazy">` : ''}
+                        <div class="card-body">
+                            <h4 class="card-title mb-3 fw-bold">${data.title}</h4>
+                            <p class="card-text text-dark">${data.contenu}</p>
+                            <div class="d-flex justify-content-between align-items-center border-top border-bottom py-3 mt-3">
+                                <div>
+                                    ${data.isAuthenticated && (data.visibility === 'public' || data.isAuthor) ? `
+                                        <button class="btn btn-link text-muted p-0 me-3 btn-like ${data.isLiked ? 'liked' : ''}" data-post-id="${postId}">
+                                            <i class="fa fa-thumbs-up me-1"></i>Like
+                                            <span id="like-count-${postId}">${data.likes || 0}</span>
+                                            <span class="spinner"></span>
+                                        </button>
+                                        <button class="btn btn-link text-muted p-0 me-3 btn-dislike ${data.isDisliked ? 'disliked' : ''}" data-post-id="${postId}">
+                                            <i class="fa fa-thumbs-down me-1"></i>Dislike
+                                            <span id="dislike-count-${postId}">${data.dislikes || 0}</span>
+                                            <span class="spinner"></span>
+                                        </button>
+                                    ` : `
+                                        <button class="btn btn-link text-muted p-0 me-3" disabled>
+                                            <i class="fa fa-thumbs-up me-1"></i>Like
+                                            <span id="like-count-${postId}">${data.likes || 0}</span>
+                                        </button>
+                                        <button class="btn btn-link text-muted p-0 me-3" disabled>
+                                            <i class="fa fa-thumbs-down me-1"></i>Dislike
+                                            <span id="dislike-count-${postId}">${data.dislikes || 0}</span>
+                                        </button>
+                                    `}
+                                    <button class="btn btn-link text-muted p-0 comment-toggle" data-post-id="${postId}">
+                                        <i class="fa fa-comment me-1"></i>Comment
+                                        <span class="badge bg-primary text-white ms-1">${data.commentsCount || 0}</span>
+                                    </button>
+                                </div>
+                                ${data.isAuthenticated && !data.isAuthor ? `
+                                    <button class="btn btn-link text-muted p-0 share-btn" data-url="${data.showUrl || '#'}">
+                                        <i class="fa fa-share me-1"></i>Share
+                                        <span class="spinner"></span>
+                                    </button>
+                                ` : ''}
+                            </div>
+                            <div class="comment-section" id="comments-${postId}">
+                                <div class="comments-container mb-4">
+                                    <div class="text-muted text-center py-3 bg-light rounded">
+                                        <i class="fa fa-info-circle me-1" aria-hidden="true"></i>Comments not loaded for search results.
+                                    </div>
+                                </div>
+                                <div class="add-comment-form">
+                                    ${data.isAuthenticated ? `
+                                        <form action="${data.commentUrl || '/comment/new/' + postId}" method="post" class="d-flex align-items-center w-100">
+                                            <div class="user-avatar">${authorName.charAt(0).toUpperCase()}</div>
+                                            <textarea name="comment[content]" class="form-control rounded-pill me-2 auto-resize" placeholder="Add a comment..." rows="3" required></textarea>
+                                            <button type="submit" class="btn btn-primary btn-sm rounded-pill">
+                                                <span>Post</span>
+                                                <div class="spinner"></div>
+                                            </button>
+                                        </form>
+                                    ` : `
+                                        <div class="text-muted text-center py-3 bg-light rounded">
+                                            <i class="fa fa-lock me-1" aria-hidden="true"></i>Please log in to comment.
+                                        </div>
+                                    `}
+                                </div>
+                                <div class="comment-error text-danger mt-2" style="display: none;"></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                requestAnimationFrame(() => {
+                    if ($existingPost.length) {
+                        $existingPost.replaceWith(postHtml);
+                        console.log(`Updated existing post ID ${postId}`);
+                    } else {
+                        $publicationsContainer.prepend(postHtml);
+                        console.log(`Added new post ID ${postId}`);
+                    }
+                    autoResizeTextarea($publicationsContainer.find('.auto-resize'));
+                    setupCommentObserver();
+                });
+            }
+
+            // Render search results
+            function renderSearchResults(data) {
+                requestAnimationFrame(() => {
+                    $publicationsContainer.empty();
+
+                    if (data.length === 0) {
+                        $publicationsContainer.html(`
+                            <div class="card empty-state">
+                                <i class="fa fa-info-circle fa-2x text-muted mb-3" aria-hidden="true"></i>
+                                <p class="text-muted">No posts found for your search.</p>
+                            </div>
+                        `);
+                        return;
+                    }
+
+                    data.forEach(post => {
+                        post.isAuthenticated = {{ app.user ? 'true' : 'false' }};
+                        updateOrAddPublication(post);
+                    });
+                });
+            }
+
+            // Like/Dislike handler
+            function setupLikeDislikeHandlers() {
+                $publicationsContainer.on('click', '.btn-like', function(e) {
+                    e.preventDefault();
+                    const $button = $(this);
+                    if ($button.hasClass('loading') || $button.is(':disabled')) {
+                        console.log('Like button disabled or loading');
+                        return;
+                    }
+
+                    const postId = $button.data('post-id');
+                    const isLiked = $button.hasClass('liked');
+                    const likeUrl = '{{ path('like_post', {'id': 'POST_ID'}) }}'.replace('POST_ID', postId);
+                    console.log('Liking post:', postId, 'URL:', likeUrl);
+
+                    $button.addClass('loading');
+
+                    $.ajax({
+                        url: likeUrl,
+                        type: 'POST',
+                        headers: {
+                            'X-CSRF-Token': csrfToken,
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        contentType: 'application/json',
+                        data: JSON.stringify({ liked: !isLiked }),
+                        success: function(response) {
+                            console.log('Like response:', response);
+                            if (response.success) {
+                                $button.toggleClass('liked', response.liked);
+                                $(`#like-count-${postId}`).text(response.likes);
+                                $(`#dislike-count-${postId}`).text(response.dislikes);
+                                $(`.btn-dislike[data-post-id="${postId}"]`).toggleClass('disliked', response.disliked);
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: response.liked ? 'Liked!' : 'Like removed!',
+                                    toast: true,
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 2000
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: response.message || 'Failed to update like status.',
+                                    showConfirmButton: true
+                                });
+                            }
+                        },
+                        error: function(xhr) {
+                            let errorMessage = 'Failed to update like status. Please try again.';
+                            try {
+                                const response = JSON.parse(xhr.responseText);
+                                errorMessage = response.message || errorMessage;
+                            } catch (e) {
+                                console.warn('Could not parse error response:', xhr.responseText);
+                            }
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: errorMessage,
+                                showConfirmButton: true
+                            });
+                            console.error('Like AJAX error:', xhr);
+                        },
+                        complete: function() {
+                            $button.removeClass('loading');
+                        }
+                    });
+                });
+
+                $publicationsContainer.on('click', '.btn-dislike', function(e) {
+                    e.preventDefault();
+                    const $button = $(this);
+                    if ($button.hasClass('loading') || $button.is(':disabled')) {
+                        console.log('Dislike button disabled or loading');
+                        return;
+                    }
+
+                    const postId = $button.data('post-id');
+                    const isDisliked = $button.hasClass('disliked');
+                    const dislikeUrl = '{{ path('dislike_post', {'id': 'POST_ID'}) }}'.replace('POST_ID', postId);
+                    console.log('Disliking post:', postId, 'URL:', dislikeUrl);
+
+                    $button.addClass('loading');
+
+                    $.ajax({
+                        url: dislikeUrl,
+                        type: 'POST',
+                        headers: {
+                            'X-CSRF-Token': csrfToken,
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        contentType: 'application/json',
+                        data: JSON.stringify({ disliked: !isDisliked }),
+                        success: function(response) {
+                            console.log('Dislike response:', response);
+                            if (response.success) {
+                                $button.toggleClass('disliked', response.disliked);
+                                $(`#like-count-${postId}`).text(response.likes);
+                                $(`#dislike-count-${postId}`).text(response.dislikes);
+                                $(`.btn-like[data-post-id="${postId}"]`).toggleClass('liked', response.liked);
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: response.disliked ? 'Disliked!' : 'Dislike removed!',
+                                    toast: true,
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 2000
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: response.message || 'Failed to update dislike status.',
+                                    showConfirmButton: true
+                                });
+                            }
+                        },
+                        error: function(xhr) {
+                            let errorMessage = 'Failed to update dislike status. Please try again.';
+                            try {
+                                const response = JSON.parse(xhr.responseText);
+                                errorMessage = response.message || errorMessage;
+                            } catch (e) {
+                                console.warn('Could not parse error response:', xhr.responseText);
+                            }
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: errorMessage,
+                                showConfirmButton: true
+                            });
+                            console.error('Dislike AJAX error:', xhr);
+                        },
+                        complete: function() {
+                            $button.removeClass('loading');
+                        }
+                    });
+                });
+            }
+
+            // Setup event handlers
+            function setupEventHandlers() {
+                $postTrigger.off('click').on('click', function() {
+                    console.log('Post trigger clicked');
+                    togglePostForm();
+                });
+
+                $publicationsContainer.on('click', '.comment-toggle', function() {
+                    const postId = $(this).data('post-id');
+                    const $commentSection = $(`#comments-${postId}`);
+                    const $commentIcon = $(this).find('i');
+                    const $badge = $(this).find('.badge');
+                    console.log('Comment toggle clicked for post:', postId);
+
+                    requestAnimationFrame(() => {
+                        $commentSection.toggleClass('active');
+                        if ($commentSection.hasClass('active')) {
+                            $commentIcon.removeClass('fa-comment').addClass('fa-comment-dots');
+                            $badge.removeClass('bg-primary').addClass('bg-success');
+                            setTimeout(() => {
+                                $commentSection[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            }, 350);
+                        } else {
+                            $commentIcon.removeClass('fa-comment-dots').addClass('fa-comment');
+                            $badge.removeClass('bg-success').addClass('bg-primary');
+                        }
+                    });
+                });
+
+                $publicationsContainer.on('click', '.share-btn', function() {
+                    const $button = $(this);
+                    if ($button.hasClass('loading')) {
+                        console.log('Share button is loading');
+                        return;
+                    }
+
+                    $button.addClass('loading');
+                    const url = $button.data('url');
+                    console.log('Share button clicked, URL:', url);
+
+                    if (navigator.clipboard) {
+                        navigator.clipboard.writeText(url)
+                            .then(() => {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Link copied!',
+                                    toast: true,
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 2000
+                                });
+                            })
+                            .catch((err) => {
+                                console.warn('Clipboard copy failed:', err);
+                                prompt('Copy this link:', url);
+                            })
+                            .finally(() => {
+                                $button.removeClass('loading');
+                            });
+                    } else {
+                        prompt('Copy this link:', url);
+                        $button.removeClass('loading');
+                    }
+                });
+
+                $('.stream-tag').off('click').on('click', function() {
+                    const $this = $(this);
+                    if ($this.hasClass('active')) {
+                        console.log('Stream tag already active:', $this.data('category'));
+                        return;
+                    }
+
+                    $('.stream-tag').removeClass('active');
+                    $this.addClass('active');
+                    const categoryId = $this.data('category');
+                    console.log('Filtering by category:', categoryId);
+
+                    if (filterCache.has(categoryId)) {
+                        const { visible, hidden } = filterCache.get(categoryId);
+                        requestAnimationFrame(() => {
+                            visible.forEach(id => $(`.fb-post[data-post-id="${id}"]`).fadeIn(200));
+                            hidden.forEach(id => $(`.fb-post[data-post-id="${id}"]`).hide());
+                        });
+                        return;
+                    }
+
+                    const visiblePosts = [];
+                    const hiddenPosts = [];
+
+                    $publicationsContainer.find('.fb-post').each(function() {
+                        const $post = $(this);
+                        const postId = $post.data('post-id');
+                        if (categoryId === 'all' || $post.data('category') == categoryId) {
+                            $post.fadeIn(200);
+                            visiblePosts.push(postId);
+                        } else {
+                            $post.hide();
+                            hiddenPosts.push(postId);
+                        }
+                    });
+
+                    filterCache.set(categoryId, { visible: visiblePosts, hidden: hiddenPosts });
+                });
+
+                // AJAX search functionality
+                const searchPosts = debounce(function() {
+                    const query = $searchPosts.val().trim();
+                    const $searchBar = $('.search-bar');
+                    console.log('Searching posts with query:', query);
+
+                    if (searchCache.has(query)) {
+                        console.log('Using cached search results for query:', query);
+                        renderSearchResults(searchCache.get(query));
+                        return;
+                    }
+
+                    $searchBar.addClass('loading');
+
+                    const searchUrl = '{{ path('search_posts') }}';
+                    console.log('Search AJAX URL:', searchUrl);
+
+                    $.ajax({
+                        url: searchUrl,
+                        type: 'GET',
+                        data: { query: query },
+                        success: function(response) {
+                            console.log('Search response:', response);
+                            if (response.success && response.data) {
+                                searchCache.set(query, response.data);
+                                renderSearchResults(response.data);
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: response.message || 'Failed to fetch search results.',
+                                    showConfirmButton: true
+                                });
+                                renderSearchResults([]);
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Search AJAX error:', { status, error, responseText: xhr.responseText });
+                            let errorMessage = 'Failed to search posts.';
+                            try {
+                                const response = JSON.parse(xhr.responseText);
+                                errorMessage = response.message || `Server error: ${status}`;
+                            } catch (e) {
+                                errorMessage = `Server error: ${status} - ${error}`;
+                            }
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: errorMessage,
+                                showConfirmButton: true
+                            });
+                            renderSearchResults([]);
+                        },
+                        complete: function() {
+                            $searchBar.removeClass('loading');
+                        }
+                    });
+                }, 300);
+
+                $searchPosts.on('input', searchPosts);
+
+                $languageSelect.on('change', function() {
+                    const lang = $(this).val();
+                    console.log('Language selected:', lang);
+                    window.location.href = `/set-language/${lang}`;
+                });
+
+                $publicationsContainer.on('click', '.edit-post-btn', function(e) {
+                    const postId = $(this).data('post-id');
+                    const href = $(this).attr('href');
+                    console.log(`Edit button clicked for post ID ${postId}, navigating to: ${href}`);
+                });
+
+                $publicationForm.on('submit', function(e) {
+                    e.preventDefault();
+                    const $form = $(this);
+                    const formData = new FormData(this);
+                    const $submitButton = $form.find('button[type="submit"]');
+                    const actionUrl = $form.attr('action') || '/service';
+                    console.log('Submitting publication form to URL:', actionUrl);
+
+                    $formErrorContainer.hide().text('');
+
+                    if (!$form[0].checkValidity()) {
+                        $form[0].reportValidity();
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Incomplete Form',
+                            text: 'Please fill in all required fields.',
+                            showConfirmButton: true
+                        });
+                        return;
+                    }
+
+                    const formDataObj = {};
+                    formData.forEach((value, key) => { formDataObj[key] = value instanceof File ? value.name : value });
+                    console.log('Form data:', formDataObj);
+
+                    $.ajax({
+                        url: actionUrl,
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        beforeSend: function() {
+                            $submitButton.prop('disabled', true).html('<div class="spinner"></div>');
+                        },
+                        success: function(response) {
+                            console.log('Publication response:', response);
+                            if (response.success && response.data) {
+                                const data = response.data;
+                                data.isAuthenticated = true;
+
+                                if (!data.idPublication || !data.title || !data.contenu) {
+                                    $formErrorContainer.text('The server returned incomplete data. Please try again.').show();
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Invalid Response',
+                                        text: 'The server returned incomplete data. Please try again.',
+                                        showConfirmButton: true
+                                    });
+                                    console.error('Invalid response data:', response);
+                                    return;
+                                }
+
+                                updateOrAddPublication(data);
+
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Post Published!',
+                                    text: 'Your post is now live.',
+                                    showConfirmButton: false,
+                                    timer: 3000
+                                });
+
+                                const sound = document.getElementById('notification-sound');
+                                sound.play().catch(error => console.warn('Sound playback failed:', error));
+
+                                $form[0].reset();
+                                $postFormContainer.removeClass('active');
+                            } else {
+                                const errorMessage = response.message || 'An unexpected error occurred. Please try again.';
+                                $formErrorContainer.text(errorMessage).show();
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: errorMessage,
+                                    showConfirmButton: true
+                                });
+                                console.error('Publication submission failed:', response);
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Publication AJAX error:', { status, error, responseText: xhr.responseText });
+                            let errorMessage = 'Failed to post publication. Please try again.';
+                            try {
+                                const response = JSON.parse(xhr.responseText);
+                                errorMessage = response.message || `Server error: ${xhr.status} - ${status}`;
+                            } catch (e) {
+                                errorMessage = `Server error: ${xhr.status} - ${error}`;
+                            }
+                            $formErrorContainer.text(errorMessage).show();
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: errorMessage,
+                                showConfirmButton: true
+                            });
+                        },
+                        complete: function() {
+                            $submitButton.prop('disabled', false).html('<i class="fa fa-plus me-2"></i>Post');
+                        }
+                    });
+                });
+
+                $publicationsContainer.on('submit', '.add-comment-form form', function(e) {
+                    e.preventDefault();
+                    const $form = $(this);
+                    const formData = new FormData(this);
+                    const postId = $form.attr('action').match(/\/comment\/new\/(\d+)/)?.[1];
+                    const $commentSection = $(`#comments-${postId}`);
+                    const $badge = $(`.comment-toggle[data-post-id="${postId}"] .badge`);
+                    const $errorContainer = $form.siblings('.comment-error');
+                    const $submitButton = $form.find('button[type="submit"]');
+                    console.log('Submitting comment for post:', postId);
+
+                    if (!$form[0].checkValidity()) {
+                        $form[0].reportValidity();
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Incomplete Form',
+                            text: 'Please enter a comment.',
+                            showConfirmButton: true
+                        });
+                        return;
+                    }
+
+                    const formDataObj = {};
+                    formData.forEach((value, key) => { formDataObj[key] = value });
+                    console.log('Comment form data:', formDataObj);
+
+                    $errorContainer.hide().text('');
+
+                    $.ajax({
+                        url: $form.attr('action'),
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        beforeSend: function() {
+                            $submitButton.prop('disabled', true).html('<div class="spinner"></div>');
+                        },
+                        success: function(response) {
+                            console.log('Comment response:', response);
+                            if (response.success && response.data) {
+                                const data = response.data;
+                                const authorName = (data.author?.nom || data.author?.email || 'Anonymous').trim();
+                                const newComment = `
+                                    <div class="comment-item d-flex mb-3">
+                                        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3" style="width: 35px; height: 35px; flex-shrink: 0;">
+                                            ${authorName.charAt(0).toUpperCase()}
+                                        </div>
+                                        <div class="bg-light p-3 rounded flex-grow-1 shadow-sm">
+                                            <div class="d-flex justify-content-between">
+                                                <h6 class="mb-1 fw-semibold">${authorName}</h6>
+                                                <small class="text-muted">${data.dateComment || new Date().toLocaleString()}</small>
+                                            </div>
+                                            <p class="mb-0">${data.content}</p>
+                                        </div>
+                                    </div>
+                                `;
+
+                                const $commentsContainer = $commentSection.find('.comments-container');
+                                $commentsContainer.find('.text-muted.text-center').remove();
+                                requestAnimationFrame(() => {
+                                    $commentsContainer.prepend(newComment);
+                                    $commentsContainer.find('.comment-item').first().fadeIn(200);
+                                });
+
+                                const currentCount = parseInt($badge.text()) || 0;
+                                $badge.text(currentCount + 1);
+
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Comment Posted!',
+                                    toast: true,
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 2000
+                                });
+
+                                const sound = document.getElementById('notification-sound');
+                                sound.play().catch(error => console.warn('Sound playback failed:', error));
+
+                                $form[0].reset();
+                                autoResizeTextarea($form.find('.auto-resize'));
+                            } else {
+                                const errorMessage = response.message || 'Something went wrong! Please try again.';
+                                $errorContainer.text(errorMessage).show();
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: errorMessage,
+                                    showConfirmButton: true
+                                });
+                                console.error('Comment submission failed:', response);
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Comment AJAX error:', { status, error, responseText: xhr.responseText });
+                            let errorMessage = 'Failed to post comment.';
+                            try {
+                                const response = JSON.parse(xhr.responseText);
+                                errorMessage = response.message || `Server error: ${status}`;
+                            } catch (e) {
+                                errorMessage = `Server error: ${status} - ${error}`;
+                            }
+                            $errorContainer.text(errorMessage).show();
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: errorMessage,
+                                showConfirmButton: true
+                            });
+                        },
+                        complete: function() {
+                            $submitButton.prop('disabled', false).html('<span>Post</span><div class="spinner"></div>');
+                        }
+                    });
+                });
+
+                setupLikeDislikeHandlers();
+            }
+
+            
+            const filterCache = new Map();
+            const searchCache = new Map();
+            initializeComponents();
+            setupEventHandlers();
+        });
+    </script>
+{% endblock %}

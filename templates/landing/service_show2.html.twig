@@ -1,0 +1,499 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ offre.titre }} - Détails de l'offre{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .star-rating {
+            font-size: 24px;
+            cursor: pointer;
+        }
+        .star-rating .star {
+            color: #ddd;
+            transition: color 0.2s;
+        }
+        .star-rating .star.active {
+            color: #ffd700;
+        }
+        .rating-info {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+        }
+        .service-image {
+            max-height: 400px;
+            object-fit: cover;
+            width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="hero_area">
+    <!-- header section strats -->
+    <header class="header_section">
+        <div class="header_top">
+            <div class="container-fluid">
+                <div class="contact_nav">
+                    <a href="">
+                        <i class="fa fa-phone" aria-hidden="true"></i>
+                        <span>Call : +01 123455678990</span>
+                    </a>
+                    <a href="">
+                        <i class="fa fa-envelope" aria-hidden="true"></i>
+                        <span>Email : demo@gmail.com</span>
+                    </a>
+                    <a href="">
+                        <i class="fa fa-map-marker" aria-hidden="true"></i>
+                        <span>Location</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="header_bottom">
+            <div class="container-fluid">
+                <nav class="navbar navbar-expand-lg custom_nav-container">
+                    <a class="navbar-brand" href="{{ path('landing_index') }}">
+                        <span>Carint</span>
+                    </a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class=""></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('landing_index') }}">Accueil</a>
+                            </li>
+                            <li class="nav-item active">
+                                <a class="nav-link" href="{{ path('landing_service') }}">Services <span class="sr-only">(current)</span></a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('landing_about') }}">About</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('landing_contact') }}">Contact Us</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#"> <i class="fa fa-user" aria-hidden="true"></i> Login</a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </header>
+    <!-- end header section -->
+</div>
+
+<!-- Service Details Section -->
+<section class="service_section layout_padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                {% if offre.image %}
+                    <img src="{{ asset('uploads/images/' ~ offre.image) }}" alt="Image de {{ offre.titre }}" class="service-image mb-4">
+                {% endif %}
+                
+                <div class="rating-section mb-4">
+                    <h4>Note moyenne</h4>
+                    <div class="star-rating" data-offer-id="{{ offre.id }}">
+                        {% for i in 1..5 %}
+                            <span class="star {% if offre.rating >= i %}active{% endif %}" data-value="{{ i }}">★</span>
+                        {% endfor %}
+                    </div>
+                    <div class="rating-info">
+                        {% if offre.ratingCount > 0 %}
+                            {{ offre.rating|number_format(1) }}/5 ({{ offre.ratingCount }} avis)
+                        {% else %}
+                            Aucun avis
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="detail-box">
+                    <h2>{{ offre.titre }}</h2>
+                    <p class="text-muted">{{ offre.description }}</p>
+                    <div class="info-list mt-4">
+                        <p><i class="fas fa-map-marker-alt text-primary"></i> <strong>Destination:</strong> {{ offre.destination }}</p>
+                        <p><i class="fas fa-tag text-primary"></i> <strong>Prix:</strong> {{ offre.prix }} €</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tutoriels Associés Section -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <h3 class="mb-4">Tutoriels Associés</h3>
+                <div class="row">
+                    {% if offre.tutorials is not empty %}
+                        {% for tutorial in offre.tutorials %}
+                            <div class="col-md-6 mb-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ tutorial.nomTutorial }}</h5>
+                                        <p class="card-text">
+                                            <i class="far fa-calendar-alt text-primary"></i> 
+                                            Du {{ tutorial.dateDebut|date('d/m/Y') }} au {{ tutorial.dateFin|date('d/m/Y') }}
+                                        </p>
+                                        <p class="card-text">
+                                            <i class="fas fa-tag text-primary"></i> 
+                                            Prix: {{ tutorial.prixTutorial }} €
+                                        </p>
+                                        <a href="{{ path('landing_tutorial_details', {'id': tutorial.id}) }}" class="btn btn-outline-primary">
+                                            <i class="fas fa-book"></i> Accéder au tutoriel
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="col-12">
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle"></i> Aucun tutoriel n'est associé à cette offre pour le moment.
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- YouTube Search Section -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="youtube-search-section">
+                    <h3 class="mb-4">
+                        <i class="fas fa-search text-danger"></i>
+                        Rechercher des tutoriels sur YouTube
+                    </h3>
+                    <form method="get" class="mb-4">
+                        <div class="input-group">
+                            <input type="text" 
+                                   name="youtube_search" 
+                                   class="form-control" 
+                                   placeholder="Rechercher des tutoriels..."
+                                   value="{{ searchTerm }}">
+                            <button class="btn btn-danger" type="submit">
+                                <i class="fas fa-search"></i> Rechercher
+                            </button>
+                        </div>
+                    </form>
+
+                    {% if searchTerm is defined and searchTerm is not empty %}
+                        <h4 class="mb-3">Résultats de recherche pour "{{ searchTerm }}"</h4>
+                        <div class="row">
+                            {% if searchResults is not empty %}
+                                {% for video in searchResults %}
+                                    <div class="col-md-4 mb-4">
+                                        <div class="card youtube-card">
+                                            <img src="{{ video.thumbnail }}" class="card-img-top" alt="{{ video.title }}">
+                                            <div class="card-body">
+                                                <h5 class="card-title">{{ video.title }}</h5>
+                                                <p class="card-text">{{ video.description|slice(0, 100) }}...</p>
+                                                <a href="{{ video.url }}" target="_blank" class="btn btn-danger">
+                                                    <i class="fab fa-youtube"></i> Voir sur YouTube
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="col-12">
+                                    <div class="alert alert-info">
+                                        <i class="fas fa-info-circle"></i> Aucune vidéo trouvée pour "{{ searchTerm }}".
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- YouTube Tutorials Section -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <h3 class="mb-4">
+                    <i class="fab fa-youtube text-danger"></i>
+                    Tutoriels YouTube Recommandés
+                </h3>
+                <div class="row">
+                    {% if youtubeVideos is not empty %}
+                        {% for video in youtubeVideos %}
+                            <div class="col-md-4 mb-4">
+                                <div class="card youtube-card">
+                                    <img src="{{ video.thumbnail }}" class="card-img-top" alt="{{ video.title }}">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ video.title }}</h5>
+                                        <p class="card-text">{{ video.description|slice(0, 100) }}...</p>
+                                        <a href="{{ video.url }}" target="_blank" class="btn btn-danger">
+                                            <i class="fab fa-youtube"></i> Voir sur YouTube
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="col-12">
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle"></i> Aucune vidéo YouTube trouvée pour ce sujet.
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+/* New styles for offer details */
+.detail-box {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+}
+
+.info-list p {
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+
+.info-list i {
+    margin-right: 10px;
+    width: 20px;
+}
+
+/* Tutorial cards styling */
+.card {
+    transition: transform 0.2s;
+    border: none;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+.card-title {
+    color: #333;
+    font-weight: 600;
+}
+
+.card-text {
+    color: #666;
+    margin-bottom: 0.5rem;
+}
+
+.btn-outline-primary {
+    margin-top: 1rem;
+}
+
+.alert-info {
+    background-color: #e3f2fd;
+    border-color: #90caf9;
+    color: #0d47a1;
+}
+
+/* YouTube card styles */
+.youtube-card {
+    transition: transform 0.3s ease;
+    height: 100%;
+}
+
+.youtube-card:hover {
+    transform: translateY(-5px);
+}
+
+.youtube-card .card-img-top {
+    height: 200px;
+    object-fit: cover;
+}
+
+.youtube-card .card-title {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    line-height: 1.4;
+    height: 3rem;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.youtube-card .card-text {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 1rem;
+    height: 4.5rem;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+
+.btn-danger {
+    background-color: #ff0000;
+    border-color: #ff0000;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-danger:hover {
+    background-color: #cc0000;
+    border-color: #cc0000;
+}
+
+.btn-danger i {
+    font-size: 1.2rem;
+}
+
+/* YouTube search section styles */
+.youtube-search-section {
+    background: #f8f9fa;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+}
+
+.input-group {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.input-group .form-control {
+    border-radius: 50px 0 0 50px;
+    padding-left: 1.5rem;
+}
+
+.input-group .btn {
+    border-radius: 0 50px 50px 0;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+}
+
+.input-group .btn i {
+    margin-right: 0.5rem;
+}
+</style>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const ratingSection = document.querySelector('.star-rating');
+            const stars = ratingSection.querySelectorAll('.star');
+            const offerId = ratingSection.dataset.offerId;
+            const ratingInfo = document.querySelector('.rating-info');
+            let hasRated = false;
+
+            // Vérifier si l'utilisateur a déjà noté cette offre
+            fetch(`/offre/${offerId}/check-rating`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.hasRated) {
+                        disableRating();
+                        showAlreadyRatedMessage();
+                    }
+                });
+
+            function disableRating() {
+                stars.forEach(star => {
+                    star.style.cursor = 'default';
+                    star.style.pointerEvents = 'none';
+                });
+            }
+
+            function showAlreadyRatedMessage() {
+                const message = document.createElement('div');
+                message.className = 'alert alert-info mt-2';
+                message.textContent = 'Vous avez déjà noté cette offre';
+                ratingSection.parentNode.appendChild(message);
+            }
+
+            stars.forEach(star => {
+                star.addEventListener('mouseover', function() {
+                    if (!hasRated) {
+                        const value = this.dataset.value;
+                        stars.forEach(s => {
+                            s.classList.toggle('active', s.dataset.value <= value);
+                        });
+                    }
+                });
+
+                star.addEventListener('mouseout', function() {
+                    if (!hasRated) {
+                        updateStarsDisplay();
+                    }
+                });
+
+                star.addEventListener('click', function() {
+                    if (!hasRated) {
+                        const rating = this.dataset.value;
+                        submitRating(rating);
+                    }
+                });
+            });
+
+            function updateStarsDisplay() {
+                const currentRating = parseFloat(ratingInfo.textContent) || 0;
+                stars.forEach(s => {
+                    s.classList.toggle('active', s.dataset.value <= currentRating);
+                });
+            }
+
+            function submitRating(rating) {
+                fetch(`/offre/${offerId}/rate`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `rating=${rating}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        hasRated = true;
+                        ratingInfo.textContent = `${data.newRating}/5 (${data.ratingCount} avis)`;
+                        updateStarsDisplay();
+                        disableRating();
+                        showSuccessMessage();
+                    } else {
+                        showErrorMessage(data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showErrorMessage('Une erreur est survenue lors de la notation');
+                });
+            }
+
+            function showSuccessMessage() {
+                const message = document.createElement('div');
+                message.className = 'alert alert-success mt-2';
+                message.textContent = 'Merci pour votre note !';
+                ratingSection.parentNode.appendChild(message);
+            }
+
+            function showErrorMessage(error) {
+                const message = document.createElement('div');
+                message.className = 'alert alert-danger mt-2';
+                message.textContent = error;
+                ratingSection.parentNode.appendChild(message);
+                setTimeout(() => message.remove(), 3000);
+            }
+        });
+    </script>
+{% endblock %} 

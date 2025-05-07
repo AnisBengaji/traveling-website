@@ -1,0 +1,470 @@
+{% extends 'admin/admin_dashboard.html.twig' %}
+
+{% block title %}Publication Index{% endblock %}
+
+{% block content %}
+   <!-- Sidebar -->
+<div class="sidebar">
+  <div class="brand">
+    <a href="{{ path('landing_index') }}" class="text-white text-decoration-none">Trip In Admin</a>
+  </div>
+  <ul class="nav flex-column">
+    <li class="nav-item">
+      <a class="nav-link" href="{{ path('admin_dashboard') }}">
+        <i class="fa fa-home me-2" aria-hidden="true"></i> Dashboard
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{{ path('admin_users') }}">
+        <i class="fa fa-users me-2" aria-hidden="true"></i> Users
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link active" href="{{ path('app_publication_index') }}">
+        <i class="fa fa-file-text me-2" aria-hidden="true"></i> Publications
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{{ path('app_activity_index') }}">
+        <i class="fa fa-futbol-o me-2" aria-hidden="true"></i> Activities
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{{ path('evenement_admin') }}">
+        <i class="fa fa-calendar me-2" aria-hidden="true"></i> Events
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#">
+        <i class="fa fa-gift me-2" aria-hidden="true"></i> Offers
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#">
+        <i class="fa fa-envelope me-2" aria-hidden="true"></i> Contact Requests
+      </a>
+    </li>
+    <li class="nav-item">
+      <form method="post" action="{{ path('app_logout') }}">
+        <input type="hidden" name="_token" value="{{ csrf_token('logout') }}">
+        <button type="submit" class="nav-link btn btn-link p-0 text-start text-white" style="width: 100%;">
+          <i class="fa fa-sign-out me-2" aria-hidden="true"></i> Logout
+        </button>
+      </form>
+    </li>
+  </ul>
+</div>
+
+    <!-- Topbar -->
+    <div class="topbar">
+        <div class="d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">Publications Management</h4>
+            <div>
+                <span class="me-3"><i class="fa fa-user me-1" aria-hidden="true"></i> Admin User</span>
+                <form method="post" action="{{ path('app_logout') }}" style="display: inline;">
+                    <input type="hidden" name="_token" value="{{ csrf_token('logout') }}">
+                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                        <i class="fa fa-sign-out" aria-hidden="true"></i> Logout
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container-fluid">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="dashboard-card">
+                        <h3>Publication Index</h3>
+                        
+                        <div class="table-responsive mt-4">
+                            <table class="table table-hover border-bottom">
+                                <thead style="background-color: #3a6ea5; color: white;">
+                                    <tr>
+                                        <th>Id</th>
+                                        <th>Title</th>
+                                        <th>Contenu</th>
+                                        <th>Date</th>
+                                        <th>Author</th>
+                                        <th>Visibility</th>
+                                        <th>Image</th>
+                                        <th>Comments</th>
+                                        <th class="text-center">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white">
+                                    {% for publication in pagination %}
+                                        <tr class="border-bottom">
+                                            <td>{{ publication.idPublication }}</td>
+                                            <td>{{ publication.title }}</td>
+                                            <td>{{ publication.contenu|length > 50 ? publication.contenu|slice(0, 50) ~ '...' : publication.contenu }}</td>
+                                            <td>{{ publication.datePublication ? publication.datePublication|date('Y-m-d') : '' }}</td>
+                                            <td>{{ publication.author.nom|default(publication.author.email) }}</td>
+                                            <td>{{ publication.visibility }}</td>
+                                            <td>
+                                                {% if publication.image %}
+                                                    <img src="{{ asset('Uploads/publications/' ~ publication.image) }}" alt="{{ publication.title }}" style="max-width: 100px;">
+                                                {% else %}
+                                                    No image
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <div class="comment-counter position-relative">
+                                                    <button class="btn comment-badge" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Toggle comments for publication {{ publication.idPublication }}">
+                                                        <span class="badge rounded-pill {% if publication.comments|length > 0 %}bg-success{% else %}bg-secondary{% endif %}">
+                                                            <i class="fa fa-comments"></i> {{ publication.comments|length }}
+                                                        </span>
+                                                    </button>
+                                                    {% if publication.comments|length > 0 %}
+                                                        <div class="dropdown-menu comment-preview p-3" style="min-width: 280px;">
+                                                            <h6 class="dropdown-header">Recent Comments</h6>
+                                                            <div class="comments-list" style="max-height: 200px; overflow-y: auto;">
+                                                                {% set commentCount = 0 %}
+                                                                {% for comment in publication.comments|slice(0, 3) %}
+                                                                    <div class="comment-item mb-2 {% if commentCount > 0 %}border-top pt-2{% endif %}">
+                                                                        <div class="d-flex justify-content-between">
+                                                                            <span class="fw-bold">{{ comment.author.nom|default(comment.author.email) }}</span>
+                                                                            <small class="text-muted">{{ comment.dateComment|date('M d') }}</small>
+                                                                        </div>
+                                                                        <p class="mb-0 text-truncate">{{ comment.content }}</p>
+                                                                    </div>
+                                                                    {% set commentCount = commentCount + 1 %}
+                                                                {% endfor %}
+                                                                {% if publication.comments|length > 3 %}
+                                                                    <div class="text-center mt-2">
+                                                                        <small class="text-muted">+ {{ publication.comments|length - 3 }} more</small>
+                                                                    </div>
+                                                                {% endif %}
+                                                            </div>
+                                                            <div class="text-center mt-2">
+                                                                <a href="{{ path('app_comment_index', {'publicationId': publication.idPublication}) }}" class="btn btn-sm btn-outline-primary">View All</a>
+                                                            </div>
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="btn-group" role="group">
+                                                    <a href="{{ path('app_publication_show', {'id': publication.idPublication}) }}" class="btn btn-sm rounded-circle btn-icon text-white" style="background-color: #4285F4;" title="Show">
+                                                        <i class="fa fa-eye"></i>
+                                                    </a>
+                                                    <a href="{{ path('app_publication_edit', {'id': publication.idPublication}) }}" class="btn btn-sm rounded-circle btn-icon text-white mx-1" style="background-color: #FBBC05;" title="Edit">
+                                                        <i class="fa fa-edit"></i>
+                                                    </a>
+                                                    <a href="{{ path('app_publication_download_pdf', {'id': publication.idPublication}) }}" class="btn btn-sm rounded-circle btn-icon text-white mx-1" style="background-color: #00C4B4;" title="Download PDF">
+                                                        <i class="fa fa-file-pdf-o"></i>
+                                                    </a>
+                                                    <form method="post" action="{{ path('app_publication_delete', {'id': publication.idPublication}) }}" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ publication.idPublication) }}">
+                                                        <button class="btn btn-sm rounded-circle btn-icon text-white" style="background-color: #EA4335;" title="Delete">
+                                                            <i class="fa fa-trash"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% else %}
+                                        <tr>
+                                            <td colspan="9" class="text-center py-4">No publications found</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Pagination Controls -->
+                        <div class="pagination-wrapper mt-4">
+                            {{ knp_pagination_render(pagination, '@KnpPaginator/Pagination/bootstrap_v5_pagination.html.twig', {}, {
+                                'align': 'center',
+                                'rounded': true,
+                                'size': 'medium'
+                            }) }}
+                            <div class="pagination-info text-center text-muted mt-2">
+                                {% set firstItem = (pagination.current - 1) * pagination.getItemNumberPerPage + 1 %}
+                                {% set lastItem = firstItem + pagination.count - 1 %}
+                                Showing {{ firstItem }} to {{ lastItem }} of {{ pagination.getTotalItemCount }} publications
+                            </div>
+                        </div>
+
+                        <div class="mt-4 text-center">
+                            <a href="{{ path('app_publication_new') }}" class="btn text-white px-4" style="background-color: #34A853;">
+                                <i class="fa fa-plus me-1"></i> Create New
+                            </a>
+                            <a href="{{ path('app_category_index') }}" class="btn text-white px-4 ms-2" style="background-color: #3a6ea5;">
+                                <i class="fa fa-list me-1"></i> View Categories
+                            </a>
+                            <a href="{{ path('app_comment_index', {'publicationId': null}) }}" class="btn text-white px-4 ms-2" style="background-color: #9c27b0;">
+                                <i class="fa fa-comments me-1"></i> Check Comments
+                            </a>
+                            <a href="{{ path('publication_chart') }}" class="btn text-white px-4 ms-2" style="background-color: #4facfe;">
+                                <i class="fa fa-bar-chart me-1"></i> Check graphic chart
+                            </a>
+                            <a href="{{ path('app_publication_download_all_pdf') }}" class="btn text-white px-4 ms-2" style="background-color: #00C4B4;">
+                                <i class="fa fa-file-pdf-o me-1"></i> Download All as PDF
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap and Font Awesome CDNs -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous">
+
+    <style>
+        /* Base Dashboard Styles */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f6f9;
+            color: #333;
+        }
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            height: 100%;
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+        .sidebar .brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .sidebar .nav-link {
+            color: #bdc3c7;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        .sidebar .nav-link:hover, .sidebar .nav-link.active {
+            background: #34495e;
+            color: white;
+        }
+        .topbar {
+            background: #ffffff;
+            padding: 15px 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: fixed;
+            top: 0;
+            left: 250px;
+            right: 0;
+            z-index: 1000;
+        }
+        .main-content {
+            margin-left: 250px;
+            padding: 80px 20px 20px;
+        }
+        .dashboard-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+        }
+        .dashboard-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        /* Comment Counter Styles */
+        .comment-counter .comment-badge {
+            padding: 0;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        .comment-counter .badge {
+            font-size: 0.85rem;
+            padding: 6px 10px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .comment-counter .badge:hover {
+            transform: scale(1.1);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .comment-preview {
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            border: none;
+            min-width: 280px;
+            max-width: 90vw;
+        }
+        .comment-item {
+            transition: background-color 0.2s ease;
+        }
+        .comment-item:hover {
+            background-color: #f8f9fa;
+        }
+        .comment-counter .badge.bg-success {
+            position: relative;
+            overflow: hidden;
+        }
+        .comment-counter .badge.bg-success::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 100%);
+            animation: shine 2s infinite;
+        }
+        @keyframes shine {
+            0% { transform: translateX(-100%); }
+            60% { transform: translateX(100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Pagination Styles */
+        .pagination-wrapper {
+            margin-top: 1.5rem;
+            padding: 0.5rem 0;
+        }
+        .pagination {
+            gap: 0.25rem;
+            justify-content: center;
+        }
+        .page-item .page-link {
+            background-color: #f8f9fa;
+            color: #3a6ea5;
+            border: 1px solid #3a6ea5;
+            border-radius: 50%;
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin: 0 3px;
+        }
+        .page-item.active .page-link {
+            background-color: #34A853;
+            color: white;
+            border-color: #34A853;
+            font-weight: bold;
+            transform: scale(1.15);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+        .page-item:not(.disabled) .page-link:hover {
+            background-color: #3a6ea5;
+            color: white;
+            border-color: #3a6ea5;
+            transform: scale(1.1);
+        }
+        .page-item.disabled .page-link {
+            background-color: #d3d9e0;
+            color: #6c757d;
+            border-color: #d3d9e0;
+            cursor: not-allowed;
+        }
+        .page-item .page-link[rel="prev"], .page-item .page-link[rel="next"] {
+            background-color: #3a6ea5;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+        }
+        .page-item:not(.disabled) .page-link[rel="prev"]:hover, .page-item:not(.disabled) .page-link[rel="next"]:hover {
+            background-color: #2a5b8c;
+            transform: scale(1.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+        .page-item.disabled .page-link[rel="prev"], .page-item.disabled .page-link[rel="next"] {
+            background-color: #d3d9e0;
+            color: #6c757d;
+        }
+        .pagination-info {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .comment-preview {
+                min-width: 200px;
+                max-width: 80vw;
+            }
+            .table-responsive {
+                overflow-x: auto;
+            }
+            .pagination {
+                flex-wrap: wrap;
+            }
+            .page-item .page-link {
+                width: 34px;
+                height: 34px;
+                font-size: 0.9rem;
+                margin: 0 2px;
+            }
+            .page-item .page-link[rel="prev"], .page-item .page-link[rel="next"] {
+                padding: 0.4rem 0.8rem;
+            }
+        }
+
+        /* Accessibility */
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Script loaded: Initializing comment dropdowns and pagination.');
+
+            // Comment dropdown handling
+            document.querySelectorAll('.comment-badge').forEach(button => {
+                console.log('Found comment badge button:', button);
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('Comment badge clicked:', this);
+                    // Rely on Bootstrap's data-bs-toggle for dropdown functionality
+                });
+
+                // Accessibility: Handle keyboard navigation
+                button.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log('Keyboard toggle triggered on:', this);
+                        this.click(); // Trigger click to toggle dropdown
+                    }
+                });
+            });
+
+            // Pagination link handling
+            document.querySelectorAll('.page-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    if (!this.parentElement.classList.contains('disabled')) {
+                        e.preventDefault();
+                        console.log('Navigating to page:', this.href);
+                        window.location.href = this.href;
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}

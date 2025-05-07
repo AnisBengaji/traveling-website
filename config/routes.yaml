@@ -1,0 +1,15 @@
+controllers:
+    resource:
+        path: ../src/Controller/
+        namespace: App\Controller
+    type: attribute
+
+
+
+chatbot_ask:
+  path: /chatbot/ask
+  controller: App\Controller\ChatbotController::ask
+  methods: POST
+    
+
+   

@@ -1,0 +1,33 @@
+{{ form_start(form) }}
+<div class="row">
+    <div class="col-md-12">
+        {{ form_label(form.content) }}
+        {{ form_widget(form.content, {'attr': {'class': 'form-control'}}) }}
+        {% for error in form.content.vars.errors %}
+            <div class="text-danger">{{ error.message }}</div>
+        {% endfor %}
+    </div>
+    
+    <div class="col-md-6 mt-3">
+        <label class="form-label">Author</label>
+        <input type="text" class="form-control" value="{{ app.user ? (app.user.nom|default(app.user.email)) : 'Unknown' }}" readonly>
+    </div>
+    
+    <div class="col-md-6 mt-3">
+        {{ form_label(form.publication) }}
+        {{ form_widget(form.publication, {'attr': {'class': 'form-select'}}) }}
+        {% for error in form.publication.vars.errors %}
+            <div class="text-danger">{{ error.message }}</div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="mt-4">
+    <button type="submit" class="btn text-white px-4" style="background-color: #34A853;">
+        <i class="fa fa-save me-1"></i> {{ button_label|default('Save') }}
+    </button>
+    <a href="{{ path('app_comment_index') }}" class="btn text-white px-4 ms-2" style="background-color: #3a6ea5;">
+        <i class="fa fa-times me-1"></i> Cancel
+    </a>
+</div>
+{{ form_end(form) }}

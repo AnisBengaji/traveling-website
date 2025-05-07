@@ -1,0 +1,39 @@
+{# templates/reset/reset.html.twig #}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reset Password</title>
+    <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+</head>
+<body>
+
+<div class="container">
+    <h2>Reset Your Password</h2>
+
+    {% if app.flashes('error') %}
+        <div class="alert alert-danger">
+            {% for message in app.flashes('error') %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <form method="POST">
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token('reset_password') }}">
+
+        <div class="form-group">
+            <label for="password">New Password</label>
+            <input type="password" name="password" id="password" class="form-control" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Reset Password</button>
+    </form>
+</div>
+
+<script src="{{ asset('js/jquery-3.4.1.min.js') }}"></script>
+<script src="{{ asset('js/bootstrap.js') }}"></script>
+</body>
+</html>
